@@ -1,0 +1,19 @@
+{% extends 'portal_web/base.html' %}
+
+{% block content %}
+<body>
+<article class="card-body mx-auto" style="max-width: 500px;">
+    <h4 class="card-title mt-3 text-center">Link your WoT account</h4>
+    <form method="post" class="row g-3">
+        <div class="col-9">
+            <input type="text" class="form-control" id="nicknameSearch" placeholder="WoT Nickname">
+        </div>
+        <div class="col-auto">
+            <button type="submit" class="btn btn-primary mb-3">Search</button>
+        </div>
+    </form>
+    {% block search_results %}
+    {% endblock %}
+</article>
+</body>
+{% endblock %}

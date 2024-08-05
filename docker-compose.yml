@@ -1,0 +1,69 @@
+version: "3.7"
+services:
+  player_app:
+    build:
+      context: .
+      dockerfile: player_portal/Dockerfile
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    container_name: player_app
+    volumes:
+      - ./player_portal:/player_app
+    ports:
+      - '8000:8000'
+    depends_on:
+      - postgres_stat
+
+  stat_app:
+    build:
+      context: .
+      dockerfile: stat_track/Dockerfile
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:9000"
+    container_name: stat_app
+    volumes:
+      - ./stat_track:/stat_app
+    ports:
+      - '9000:9000'
+    depends_on:
+      - postgres_stat
+
+  postgres_stat:
+    image: postgres:16.2-alpine3.19
+    container_name: postgres_stat
+    ports:
+      - '5433:5432'
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+
+  redis:
+    image: redis
+    ports:
+      - "6379:6379"
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: stat_track/Dockerfile
+    command: celery -A stat_track beat -l info
+    volumes:
+      - ./stat_track:/stat_app/
+    depends_on:
+      - stat_app
+      - redis
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: stat_track/Dockerfile
+    command: celery -A stat_track worker -l info
+    volumes:
+      - ./stat_track:/stat_app/
+    depends_on:
+      - stat_app
+      - redis
+
+volumes:
+  postgres_data:

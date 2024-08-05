@@ -3,9 +3,14 @@ import urllib.request
 import requests
 from .models import Tank
 from django.conf import settings
+from celery import shared_task
+
+import logging
+logger = logging.getLogger(__name__)
 
 
 def get_expected_stats():
+    logger.info("Celery is updating expected values")
     with urllib.request.urlopen("https://static.modxvm.com/wn8-data-exp/json/wn8exp.json") as url:
         data = json.load(url)['data']
         for item in data:
@@ -18,7 +23,9 @@ def get_expected_stats():
                 tank.save()
 
 
+@shared_task()
 def update_tank_list():
+    logger.info("Celery is updating tank list")
     endpoint_url = 'https://api.worldoftanks.eu/wot/encyclopedia/vehicles/'
     application_id = settings.WARGAMING_API_KEY
     parameters = {

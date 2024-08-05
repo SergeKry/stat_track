@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% load bootstrap5 %}
+    {% bootstrap_css %}
+    {% bootstrap_javascript %}
+</head>
+<body>
+<div class="container">
+  <ul class="nav bg-info">
+    <li class="nav-item">
+      <a class="nav-link link-light" href="{% url 'portal_web:index' %}">HOME</a>
+    </li>
+    <li class="nav-item">
+      <a class="nav-link link-light" href="#">SECOND MENU ITEM</a>
+    </li>
+    {% if request.user.is_authenticated %}
+      <li class="nav-item">
+        <a class="nav-link link-light" href="{% url 'portal_web:logout' %}">LOGOUT</a>
+      </li>
+    {% endif %}
+  </ul>
+</div>
+
+  {% block content %}
+  {% endblock %}
+
+</body>
+</html>

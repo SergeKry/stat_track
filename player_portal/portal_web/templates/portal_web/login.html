@@ -1,0 +1,30 @@
+{% extends 'portal_web/base.html' %}
+
+{% block content %}
+<body>
+<article class="card-body mx-auto" style="max-width: 400px;">
+    <h4 class="card-title mt-3 text-center">Sign In</h4>
+    <form method="post">
+        {% csrf_token %}
+        <div class="input-group mb-3">
+            <div class="input-group-prepend">
+                <span class="input-group-text"> <i class="fa fa-user">U</i> </span>
+            </div>
+            {{ form.username }}
+        </div>
+        <span>{{ form.errors.username }}</span>
+        <div class="input-group mb-3">
+    	    <div class="input-group-prepend">
+		        <span class="input-group-text"> <i class="fa fa-envelope">P</i> </span>
+		    </div>
+            {{ form.password }}
+        </div>
+        <span>{{ form.errors.password }}</span>
+        <div class="d-grid gap-2">
+            <button type="submit" class="btn btn-primary" type="button">Log In</button>
+            <a class="btn btn-outline-primary" href="{% url 'portal_web:sign_up' %}" role="button">Create an account</a>
+        </div>
+    </form>
+</article>
+</body>
+{% endblock %}
