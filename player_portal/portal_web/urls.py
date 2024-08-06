@@ -1,7 +1,11 @@
 from django.urls import path
-from .views import IndexView, CustomLoginView, SignUpView, WGPlayerSearchView
 from django.contrib.auth.views import LogoutView
-
+from .views import (IndexView,
+                    CustomLoginView,
+                    SignUpView,
+                    WGPlayerSearchView,
+                    CreateProfileView,
+                    )
 
 app_name = 'portal_web'
 urlpatterns = [
@@ -10,4 +14,5 @@ urlpatterns = [
     path('sign_up/', SignUpView.as_view(), name='sign_up'),
     path('logout/', LogoutView.as_view(), name='logout'),
     path('wg_player_search', WGPlayerSearchView.as_view(), name='wg_player_search'),
+    path('create_profile/', CreateProfileView.as_view(), name='create_profile'),
 ]

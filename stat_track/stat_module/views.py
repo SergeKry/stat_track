@@ -2,7 +2,7 @@ import requests
 from django.shortcuts import render
 from rest_framework import generics
 from django.conf import settings
-from .serializers import WGPlayerSerializer
+from .serializers import WGPlayerSerializer, PlayerSerializer
 
 
 class WargamingAPIMixin:
@@ -30,3 +30,8 @@ class GetPlayersView(WargamingAPIMixin, generics.ListAPIView):
             pass
         self.add_parameters(search=username)
         return self.get_data()
+
+
+class CreatePlayerView(generics.CreateAPIView):
+    """Creates player profile"""
+    serializer_class = PlayerSerializer

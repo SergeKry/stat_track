@@ -11,3 +11,8 @@ class Tank(models.Model):
     exp_spot = models.FloatField(null=True)
     exp_damage = models.FloatField(null=True)
     exp_winrate = models.FloatField(null=True)
+
+
+class Player(models.Model):
+    player_id = models.IntegerField()
+    premium = models.BooleanField(default=False)

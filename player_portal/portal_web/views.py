@@ -18,7 +18,8 @@ class IndexView(LoginRequiredMixin, View):
         player_profile = PlayerProfile.objects.filter(user=request.user).first()
         if not player_profile:
             return render(request, 'portal_web/set_profile.html')
-        return render(request, self.template)
+        context = {'profile': player_profile}
+        return render(request, self.template, context)
 
 
 class CustomLoginView(LoginView):
@@ -43,9 +44,14 @@ class StatisticsAPIMixin:
     url = 'http://statapp:9000/api/'
     endpoint = None
     parameters = None
+    json = None
 
     def get_response(self):
-        r = requests.get(self.url + self.endpoint, params=self.parameters)
+        r = requests.get(self.url + self.endpoint, params=self.parameters, json=self.json)
+        return r.json()
+
+    def post_request(self):
+        r = requests.post(self.url + self.endpoint, params=self.parameters, json=self.json)
         return r.json()
 
 
@@ -58,3 +64,19 @@ class WGPlayerSearchView(LoginRequiredMixin, StatisticsAPIMixin, View):
         players = self.get_response()
         context = {'players': players}
         return render(request, 'portal_web/set_profile.html', context)
+
+
+class CreateProfileView(LoginRequiredMixin, StatisticsAPIMixin, View):
+    endpoint = 'create_player/'
+    json = None
+
+    def get(self, request, *args, **kwargs):
+        pass
+
+    def post(self, request, *args, **kwargs):
+        player_id = request.POST.get('player')
+        player_nickname = request.POST.get('nickname')
+        PlayerProfile.objects.create(user=request.user, player_id=player_id, nickname=player_nickname)
+        self.json = {'player_id': player_id}
+        stat_response = self.post_request()
+        return redirect(reverse_lazy('portal_web:index'))
