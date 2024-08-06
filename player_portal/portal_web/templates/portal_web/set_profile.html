@@ -2,18 +2,19 @@
 
 {% block content %}
 <body>
-<article class="card-body mx-auto" style="max-width: 500px;">
+<article class="card-body mx-auto w-50">
     <h4 class="card-title mt-3 text-center">Link your WoT account</h4>
-    <form method="post" class="row g-3">
+    <form method="get" action="{% url 'portal_web:wg_player_search' %}" class="row g-3">
         <div class="col-9">
-            <input type="text" class="form-control" id="nicknameSearch" placeholder="WoT Nickname">
+            <input type="text" class="form-control" id="nicknameSearch" name="username" placeholder="WoT Nickname" value="{{ username }}">
         </div>
-        <div class="col-auto">
+        <div class="col-3 d-grid gap-2">
             <button type="submit" class="btn btn-primary mb-3">Search</button>
         </div>
     </form>
-    {% block search_results %}
-    {% endblock %}
+    {% if players %}
+    {% include 'portal_web/player_search_results.html' %}
+    {% endif %}
 </article>
 </body>
 {% endblock %}

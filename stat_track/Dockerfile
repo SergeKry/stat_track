@@ -1,6 +1,6 @@
 FROM python:3.12-slim
 
-WORKDIR /stat_app
+WORKDIR /statapp
 
 COPY requirements.txt .
 

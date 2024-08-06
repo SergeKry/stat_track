@@ -7,6 +7,7 @@ from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LoginView
 from .forms import SignUpForm, SignInForm
 from .models import PlayerProfile
+import requests
 
 
 class IndexView(LoginRequiredMixin, View):
@@ -33,7 +34,27 @@ class SignUpView(CreateView):
 
     def form_valid(self, form):
         user = form.save()
-        print(f"Session ID before login: {self.request.session.session_key}")
         login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
-        print(f"Session ID after login: {self.request.session.session_key}")
         return super().form_valid(form)
+
+
+class StatisticsAPIMixin:
+    """Mixing to work with statistics API. Endpoint must be specified"""
+    url = 'http://statapp:9000/api/'
+    endpoint = None
+    parameters = None
+
+    def get_response(self):
+        r = requests.get(self.url + self.endpoint, params=self.parameters)
+        return r.json()
+
+
+class WGPlayerSearchView(LoginRequiredMixin, StatisticsAPIMixin, View):
+    endpoint = 'get_players/'
+
+    def get(self, request, *args, **kwargs):
+        username = request.GET.get('username')
+        self.parameters = {'username': username}
+        players = self.get_response()
+        context = {'players': players}
+        return render(request, 'portal_web/set_profile.html', context)

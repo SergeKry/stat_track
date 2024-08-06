@@ -1,0 +1,14 @@
+
+<body>
+<form method="post">
+    {% csrf_token %}
+    <select class="form-select" size="10" aria-label="player search results">
+        {% for player in players %}
+            <option value="{{ player.account_id }}">{{ player.nickname }}</option>
+        {% endfor %}
+    </select>
+    <div class="d-grid gap-2 my-2">
+        <button type="submit" class="btn btn-primary" type="button">Connect Account</button>
+    </div>
+</form>
+</body>

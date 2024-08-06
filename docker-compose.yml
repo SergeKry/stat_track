@@ -13,14 +13,14 @@ services:
     depends_on:
       - postgres_stat
 
-  stat_app:
+  statapp:
     build:
       context: .
       dockerfile: stat_track/Dockerfile
     command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:9000"
-    container_name: stat_app
+    container_name: statapp
     volumes:
-      - ./stat_track:/stat_app
+      - ./stat_track:/statapp
     ports:
       - '9000:9000'
     depends_on:
@@ -49,9 +49,9 @@ services:
       dockerfile: stat_track/Dockerfile
     command: celery -A stat_track beat -l info
     volumes:
-      - ./stat_track:/stat_app/
+      - ./stat_track:/statapp/
     depends_on:
-      - stat_app
+      - statapp
       - redis
 
   celery-worker:
@@ -60,9 +60,9 @@ services:
       dockerfile: stat_track/Dockerfile
     command: celery -A stat_track worker -l info
     volumes:
-      - ./stat_track:/stat_app/
+      - ./stat_track:/statapp/
     depends_on:
-      - stat_app
+      - statapp
       - redis
 
 volumes:
