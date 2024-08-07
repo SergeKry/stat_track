@@ -1,0 +1,24 @@
+
+<body>
+<form action="{% url 'portal_web:create_profile' %}"method="post" id="playerForm">
+    {% csrf_token %}
+    <select class="form-select" size="10" aria-label="player search results" name="player" id="playerSelect">
+        {% for player in players %}
+            <option value="{{ player.account_id }}" data-nickname="{{ player.nickname }}">{{ player.nickname }}</option>
+        {% endfor %}
+    </select>
+    <input type="hidden" name="nickname" id="playerNickname">
+    <div class="d-grid gap-2 my-2">
+        <button type="submit" class="btn btn-primary" type="button">Connect Account</button>
+    </div>
+</form>
+
+    <script>
+        document.getElementById('playerForm').addEventListener('submit', function() {
+            var selectedOption = document.getElementById('playerSelect').selectedOptions[0];
+            var dataType = selectedOption.getAttribute('data-nickname');
+            document.getElementById('playerNickname').value = dataType;
+        });
+    </script>
+
+</body>

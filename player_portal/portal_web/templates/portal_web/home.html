@@ -2,7 +2,14 @@
 
 {% block content %}
 <body>
-<h1>Welcome {{ request.user }}</h1>
+<div class="container">
+    <h2>Welcome to homepage</h2>
+    <p>connected profile:</p>
+    <ul>
+        <li>{{ profile.nickname }}</li>
+        <li>{{ profile.player_id }}</li>
+    </ul>
+</div>
 </body>
 
 {% endblock %}
