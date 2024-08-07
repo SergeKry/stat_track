@@ -11,8 +11,30 @@ class Tank(models.Model):
     exp_spot = models.FloatField(null=True)
     exp_damage = models.FloatField(null=True)
     exp_winrate = models.FloatField(null=True)
+    exp_frag = models.FloatField(null=True)
 
 
 class Player(models.Model):
     player_id = models.IntegerField()
     premium = models.BooleanField(default=False)
+
+
+class PlayerStats(models.Model):
+    player_id = models.ForeignKey(Player, on_delete=models.DO_NOTHING)
+    battles = models.IntegerField(default=0)
+    wn8 = models.FloatField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']
+
+
+class DetailedStats(models.Model):
+    player = models.ForeignKey(Player, on_delete=models.DO_NOTHING)
+    tank_id = models.ForeignKey(Tank, on_delete=models.DO_NOTHING)
+    tank_battles = models.IntegerField(default=0)
+    tank_wn8 = models.FloatField(default=0)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['created_at']

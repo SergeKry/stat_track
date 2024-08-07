@@ -20,6 +20,7 @@ def get_expected_stats():
                 tank.exp_spot = item["expSpot"]
                 tank.exp_damage = item["expDamage"]
                 tank.exp_winrate = item["expWinRate"]
+                tank.exp_frag = item["expFrag"]
                 tank.save()
 
 
