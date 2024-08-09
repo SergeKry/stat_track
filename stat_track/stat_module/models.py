@@ -20,7 +20,7 @@ class Player(models.Model):
 
 
 class PlayerStats(models.Model):
-    player_id = models.ForeignKey(Player, on_delete=models.DO_NOTHING)
+    player = models.ForeignKey(Player, on_delete=models.DO_NOTHING)
     battles = models.IntegerField(default=0)
     wn8 = models.FloatField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -31,10 +31,11 @@ class PlayerStats(models.Model):
 
 class DetailedStats(models.Model):
     player = models.ForeignKey(Player, on_delete=models.DO_NOTHING)
-    tank_id = models.ForeignKey(Tank, on_delete=models.DO_NOTHING)
+    tank = models.ForeignKey(Tank, on_delete=models.DO_NOTHING)
     tank_battles = models.IntegerField(default=0)
     tank_wn8 = models.FloatField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ['created_at']
+
