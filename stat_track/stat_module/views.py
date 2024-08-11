@@ -1,12 +1,11 @@
 import requests
-from django.shortcuts import render
 from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
 from .serializers import WGPlayerSerializer, PlayerSerializer, PlayerStatsSerializer
 from .statistics import TankStatistics
-from .models import PlayerStats
+from .models import PlayerStats, DetailedStats
 
 
 class WargamingAPIMixin:
@@ -42,16 +41,32 @@ class CreatePlayerView(generics.CreateAPIView):
 
 
 class DetailedStatView(APIView):
+    """Post method updates statistics of the user in DB. Get method returns user's statistics for all tanks"""
     def post(self, request, *args, **kwargs):
         player_id = kwargs.get('player_id')
         player_stat = TankStatistics(player_id)
         data = player_stat.save()
         return Response(data, status=status.HTTP_201_CREATED)
 
-    # def get(self, request, player_id, *args, **kwargs):
-    #     player_id = kwargs.get('player_id')
-    #     player_stat =
-
+    def get(self, request, *args, **kwargs):
+        player_id = kwargs.get('player_id')
+        player_stat = DetailedStats.objects.filter(player__player_id=player_id).filter(actual=True).all()
+        response = []
+        for item in player_stat:
+            tank_stat = {
+                'wg_tank_id': item.tank.wg_tank_id,
+                'tank_name': item.tank.name,
+                'tank_nation': item.tank.nation,
+                'tank_type': item.tank.type,
+                'tank_tier': item.tank.tier,
+                'small_icon': item.tank.small_icon,
+                'contour_icon': item.tank.contour_icon,
+                'big_icon': item.tank.big_icon,
+                'tank_battles': item.tank_battles,
+                'tank_wn8': item.tank_wn8,
+            }
+            response.append(tank_stat)
+        return Response(response, status=status.HTTP_200_OK)
 
 class PlayerStatView(generics.RetrieveAPIView):
     serializer_class = PlayerStatsSerializer
