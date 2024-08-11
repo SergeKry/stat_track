@@ -11,8 +11,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+
 import os
 from dotenv import load_dotenv
+
+from .celery import app
+from celery.schedules import crontab
 
 # Load environment variables from .env file
 load_dotenv()
@@ -179,9 +183,6 @@ CELERY_BROKER_URL = "redis://redis:6379/0"
 CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 
 # Celery tasks
-from .celery import app
-from celery.schedules import crontab
-
 app.conf.beat_schedule = {
     'update-tank-list': {
         'task': 'stat_module.tasks.update_tank_list',

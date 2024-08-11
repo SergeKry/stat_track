@@ -31,12 +31,13 @@ def update_tank_list():
     application_id = settings.WARGAMING_API_KEY
     parameters = {
         'application_id': application_id,
-        'fields': 'name, nation, tier, type'
+        'fields': 'name, nation, tier, type, images'
     }
     r = requests.get(endpoint_url, params=parameters)
     data = r.json()['data']
     for item in data.items():
         tank_id, tank_data = item
+        images = tank_data['images']
         obj, created = Tank.objects.update_or_create(
             wg_tank_id=tank_id,
             defaults={
@@ -44,7 +45,10 @@ def update_tank_list():
                 'nation': tank_data['nation'],
                 'wg_tank_id': tank_id,
                 'tier': tank_data['tier'],
-                'type': tank_data['type']
+                'type': tank_data['type'],
+                'small_icon': images['small_icon'],
+                'contour_icon': images['contour_icon'],
+                'big_icon': images['big_icon'],
             }
         )
     get_expected_stats()

@@ -12,6 +12,9 @@ class Tank(models.Model):
     exp_damage = models.FloatField(null=True)
     exp_winrate = models.FloatField(null=True)
     exp_frag = models.FloatField(null=True)
+    small_icon = models.URLField(null=True)
+    contour_icon = models.URLField(null=True)
+    big_icon = models.URLField(null=True)
 
 
 class Player(models.Model):

@@ -4,8 +4,9 @@ from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
-from .serializers import WGPlayerSerializer, PlayerSerializer
+from .serializers import WGPlayerSerializer, PlayerSerializer, PlayerStatsSerializer
 from .statistics import TankStatistics
+from .models import PlayerStats
 
 
 class WargamingAPIMixin:
@@ -48,4 +49,13 @@ class DetailedStatView(APIView):
         return Response(data, status=status.HTTP_201_CREATED)
 
     # def get(self, request, player_id, *args, **kwargs):
-    #     pass
+    #     player_id = kwargs.get('player_id')
+    #     player_stat =
+
+
+class PlayerStatView(generics.RetrieveAPIView):
+    serializer_class = PlayerStatsSerializer
+
+    def get_object(self):
+        player_stats = PlayerStats.objects.get(player__player_id=self.kwargs['player_id'])
+        return player_stats

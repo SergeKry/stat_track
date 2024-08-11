@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Player
+from .models import Player, PlayerStats
 
 
 class WGPlayerSerializer(serializers.Serializer):
@@ -11,3 +11,9 @@ class PlayerSerializer(serializers.ModelSerializer):
     class Meta:
         model = Player
         fields = ['player_id', 'premium']
+
+
+class PlayerStatsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = PlayerStats
+        fields = ['battles', 'wn8']
