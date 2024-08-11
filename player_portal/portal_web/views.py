@@ -10,15 +10,36 @@ from .models import PlayerProfile
 import requests
 
 
-class IndexView(LoginRequiredMixin, View):
+class StatisticsAPIMixin:
+    """Mixing to work with statistics API. Endpoint must be specified"""
+    url = 'http://statapp:9000/api/'
+    endpoint = None
+    pk = None
+    parameters = None
+    json = None
+
+    def get_response(self):
+        r = requests.get(self.url + self.endpoint + str(self.pk), params=self.parameters, json=self.json)
+        return r.json()
+
+    def post_request(self):
+        r = requests.post(self.url + self.endpoint + str(self.pk), params=self.parameters, json=self.json)
+        return r.json()
+
+
+class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
     template = 'portal_web/home.html'
     login_url = reverse_lazy('portal_web:login')
 
+    endpoint = 'player_stats/'
+
     def get(self, request, *args, **kwargs):
         player_profile = PlayerProfile.objects.filter(user=request.user).first()
+        self.pk = player_profile.player_id
         if not player_profile:
             return render(request, 'portal_web/set_profile.html')
-        context = {'profile': player_profile}
+        statistics = self.get_response()
+        context = {'profile': player_profile, 'statistics': statistics}
         return render(request, self.template, context)
 
 
@@ -37,22 +58,6 @@ class SignUpView(CreateView):
         user = form.save()
         login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
         return super().form_valid(form)
-
-
-class StatisticsAPIMixin:
-    """Mixing to work with statistics API. Endpoint must be specified"""
-    url = 'http://statapp:9000/api/'
-    endpoint = None
-    parameters = None
-    json = None
-
-    def get_response(self):
-        r = requests.get(self.url + self.endpoint, params=self.parameters, json=self.json)
-        return r.json()
-
-    def post_request(self):
-        r = requests.post(self.url + self.endpoint, params=self.parameters, json=self.json)
-        return r.json()
 
 
 class WGPlayerSearchView(LoginRequiredMixin, StatisticsAPIMixin, View):

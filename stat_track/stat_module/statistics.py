@@ -33,7 +33,7 @@ class IndividualTankStatistics:
             r_def_c = min(r_damage_c + 0.1, max(0, (r_def - 0.10) / (1 - 0.10)))
 
             wn8 = 980 * r_damage_c + 210 * r_damage_c * r_frag_c + 155 * r_frag_c * r_spot_c + 75 * r_def_c * r_frag_c + 145 * min(1.8, r_win_c)
-            return wn8
+            return round(wn8, 2)
         return 0
 
 
@@ -69,15 +69,17 @@ class TankStatistics:
                                'tank_wn8': tank_stat.wn8})
 
             # Checking if we have a record already. If number of battles didn't change, we do not create a duplicate
-            latest_stat = DetailedStats.objects.filter(tank=tank_stat.tank).last()
-            if latest_stat and latest_stat.tank_battles == tank_stat.battles:
-                continue
-
+            latest_stat = DetailedStats.objects.filter(tank=tank_stat.tank).filter(actual=True).first()
+            if latest_stat:
+                if latest_stat.tank_battles == tank_stat.battles:
+                    continue
+                latest_stat.actual = False
             DetailedStats.objects.create(
                 player=self.player,
                 tank=tank_stat.tank,
                 tank_battles=tank_stat.battles,
                 tank_wn8=tank_stat.wn8,
+                actual=True,
             )
         return tank_stats
 
@@ -88,7 +90,7 @@ class TankStatistics:
             total_battles += item['tank_battles']
             total_wn8 += item['tank_wn8'] * item['tank_battles']
 
-        avrg_wn8 = total_wn8/total_battles
+        avrg_wn8 = round(total_wn8/total_battles, 2)
 
         latest_stat = PlayerStats.objects.filter(player=self.player).last()
         if not latest_stat or latest_stat.battles != total_battles:
