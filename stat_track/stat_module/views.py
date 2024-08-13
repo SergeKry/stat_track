@@ -68,6 +68,7 @@ class DetailedStatView(APIView):
             response.append(tank_stat)
         return Response(response, status=status.HTTP_200_OK)
 
+
 class PlayerStatView(generics.RetrieveAPIView):
     serializer_class = PlayerStatsSerializer
 

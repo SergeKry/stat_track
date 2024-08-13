@@ -1,10 +1,12 @@
 {% extends 'portal_web/base.html' %}
 
+{% load static %}
+
 {% block content %}
 <body>
 <div class="container mt-3">
     <div class="row">
-        <div class="col"><h2>{{ profile.nickname }}</h2></div>
+        <div class="col"><h2>{{ profile.nickname }}</h2><span hidden id="playerID">{{ profile.player_id }}</span></div>
     </div>
     <div class="row">
         <div class="column">Battles: {{ statistics.battles }}</div>
@@ -18,16 +20,19 @@
     <div class="accordion" id="accordionTanksStats">
         <div class="accordion-item">
             <h2 class="accordion-header" id="headingOne">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                <button class="accordion-button collapsed" id="accordionButtonCollapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
                     Tanks Statistics
                 </button>
             </h2>
             <div id="collapseOne" class="accordion-collapse collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionTanksStats">
-                <div class="accordion-body">Placeholder content for this accordion, which is intended to demonstrate the <code>.accordion-flush</code> class. This is the first item's accordion body.</div>
+                <div class="accordion-body">
+                    <div class="container-fluid" id="statTable"></div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+<script src="{% static 'portal_web/js/home_utils.js' %}"></script>
 </body>
 
 {% endblock %}

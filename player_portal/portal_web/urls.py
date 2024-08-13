@@ -5,6 +5,7 @@ from .views import (IndexView,
                     SignUpView,
                     WGPlayerSearchView,
                     CreateProfileView,
+                    DetailedStatView
                     )
 
 app_name = 'portal_web'
@@ -15,4 +16,5 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('wg_player_search', WGPlayerSearchView.as_view(), name='wg_player_search'),
     path('create_profile/', CreateProfileView.as_view(), name='create_profile'),
+    path('detailed_stats/', DetailedStatView.as_view(), name='detailed_stats'),
 ]

@@ -1,6 +1,7 @@
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.http import JsonResponse
 from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
@@ -18,12 +19,29 @@ class StatisticsAPIMixin:
     parameters = None
     json = None
 
-    def get_response(self):
-        r = requests.get(self.url + self.endpoint + str(self.pk), params=self.parameters, json=self.json)
+    def get_attributes(self, endpoint, parameters, json):
+        if not endpoint:
+            endpoint = self.endpoint
+        if not parameters:
+            parameters = self.parameters
+        if not json:
+            json = self.json
+        return endpoint, parameters, json
+
+    def get_response(self, endpoint=None, parameters=None, json=None):
+        endpoint, parameters, json = self.get_attributes(endpoint, parameters, json)
+        if self.pk:
+            r = requests.get(self.url + endpoint + str(self.pk), params=parameters, json=json)
+        else:
+            r = requests.get(self.url + endpoint, params=parameters, json=json)
         return r.json()
 
-    def post_request(self):
-        r = requests.post(self.url + self.endpoint + str(self.pk), params=self.parameters, json=self.json)
+    def post_request(self, endpoint=None, parameters=None, json=None):
+        endpoint, parameters, json = self.get_attributes(endpoint, parameters, json)
+        if self.pk:
+            r = requests.post(self.url + endpoint + str(self.pk)+'/', params=parameters, json=json)
+        else:
+            r = requests.post(self.url + endpoint, params=parameters, json=json)
         return r.json()
 
 
@@ -33,11 +51,16 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
 
     endpoint = 'player_stats/'
 
+    def update_statistics(self):
+        endpoint = 'detailed_stats/'
+        self.post_request(endpoint=endpoint)
+
     def get(self, request, *args, **kwargs):
         player_profile = PlayerProfile.objects.filter(user=request.user).first()
-        self.pk = player_profile.player_id
         if not player_profile:
             return render(request, 'portal_web/set_profile.html')
+        self.pk = player_profile.player_id
+        self.update_statistics()
         statistics = self.get_response()
         context = {'profile': player_profile, 'statistics': statistics}
         return render(request, self.template, context)
@@ -85,3 +108,14 @@ class CreateProfileView(LoginRequiredMixin, StatisticsAPIMixin, View):
         self.json = {'player_id': player_id}
         stat_response = self.post_request()
         return redirect(reverse_lazy('portal_web:index'))
+
+
+class DetailedStatView(LoginRequiredMixin, StatisticsAPIMixin, View):
+    endpoint = 'detailed_stats/'
+    pk = None
+
+    def get(self, request, *args, **kwargs):
+        self.pk = request.GET.get('player_id')
+        detailed_stat = self.get_response()
+        context = {'detailed_stat': detailed_stat}
+        return render(request, 'portal_web/detailed_stats.html', context)

@@ -1,3 +1,4 @@
+{% load static %}
 
 <body>
 <form action="{% url 'portal_web:create_profile' %}"method="post" id="playerForm">
@@ -13,12 +14,6 @@
     </div>
 </form>
 
-    <script>
-        document.getElementById('playerForm').addEventListener('submit', function() {
-            var selectedOption = document.getElementById('playerSelect').selectedOptions[0];
-            var dataType = selectedOption.getAttribute('data-nickname');
-            document.getElementById('playerNickname').value = dataType;
-        });
-    </script>
+    <script src="{% static 'portal_web/js/player_search_results_utils.js' %}"></script>
 
 </body>

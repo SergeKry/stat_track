@@ -6,19 +6,26 @@
     {% load bootstrap5 %}
     {% bootstrap_css %}
     {% bootstrap_javascript %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 <div class="container">
   <ul class="nav bg-info">
     <li class="nav-item">
-      <a class="nav-link link-light" href="{% url 'portal_web:index' %}">HOME</a>
+      <a class="nav-link link-light" href="{% url 'portal_web:index' %}">STATISTICS</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link link-light" href="#">SECOND MENU ITEM</a>
+      <a class="nav-link link-light" href="#">BOOST RECOMENDATIONS</a>
     </li>
     {% if request.user.is_authenticated %}
-      <li class="nav-item">
-        <a class="nav-link link-light" href="{% url 'portal_web:logout' %}">LOGOUT</a>
+      <li class="nav-item dropdown">
+          <a class="nav-link link-light dropdown-toggle" href="#" id="navbarDropdownMenuLink" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              PROFILE
+          </a>
+          <ul class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">
+              <li><a class="dropdown-item" href="#">Profile</a></li>
+              <li><a class="dropdown-item" href="{% url 'portal_web:logout' %}">Logout</a></li>
+          </ul>
       </li>
     {% endif %}
   </ul>
