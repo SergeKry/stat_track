@@ -8,6 +8,7 @@ class PlayerProfile(models.Model):
     nickname = models.CharField(max_length=120)
     player_id = models.IntegerField()
     desired_wn8 = models.PositiveIntegerField(null=True, validators=[MaxValueValidator(9999)])
+    premium_expires = models.DateTimeField(null=True, blank=True)
 
     class Meta:
         permissions = [
