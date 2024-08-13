@@ -1,15 +1,38 @@
 {% extends 'portal_web/base.html' %}
 
+{% load static %}
+
 {% block content %}
 <body>
-<div class="container">
-    <h2>Welcome to homepage</h2>
-    <p>connected profile:</p>
-    <ul>
-        <li>{{ profile.nickname }}</li>
-        <li>{{ profile.player_id }}</li>
-    </ul>
+<div class="container mt-3">
+    <div class="row">
+        <div class="col"><h2>{{ profile.nickname }}</h2><span hidden id="playerID">{{ profile.player_id }}</span></div>
+    </div>
+    <div class="row">
+        <div class="column">Battles: {{ statistics.battles }}</div>
+        <div class="column">WN8: {{ statistics.wn8 }}</div>
+    </div>
+    <div class="row">
+            <div class="container-fluid my-2" id="chart" style="border: 2px solid #4f4f4f; border-radius: 5px; height: 200px">
+                Statistics chart goes here
+            </div>
+    </div>
+    <div class="accordion" id="accordionTanksStats">
+        <div class="accordion-item">
+            <h2 class="accordion-header" id="headingOne">
+                <button class="accordion-button collapsed" id="accordionButtonCollapsed" type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne" aria-expanded="true" aria-controls="collapseOne">
+                    Tanks Statistics
+                </button>
+            </h2>
+            <div id="collapseOne" class="accordion-collapse collapse collapse" aria-labelledby="headingOne" data-bs-parent="#accordionTanksStats">
+                <div class="accordion-body">
+                    <div class="container-fluid" id="statTable"></div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+<script src="{% static 'portal_web/js/home_utils.js' %}"></script>
 </body>
 
 {% endblock %}

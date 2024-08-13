@@ -1,6 +1,7 @@
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
+from django.http import JsonResponse
 from django.views.generic import TemplateView, View
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic.edit import CreateView
@@ -10,15 +11,58 @@ from .models import PlayerProfile
 import requests
 
 
-class IndexView(LoginRequiredMixin, View):
+class StatisticsAPIMixin:
+    """Mixing to work with statistics API. Endpoint must be specified"""
+    url = 'http://statapp:9000/api/'
+    endpoint = None
+    pk = None
+    parameters = None
+    json = None
+
+    def get_attributes(self, endpoint, parameters, json):
+        if not endpoint:
+            endpoint = self.endpoint
+        if not parameters:
+            parameters = self.parameters
+        if not json:
+            json = self.json
+        return endpoint, parameters, json
+
+    def get_response(self, endpoint=None, parameters=None, json=None):
+        endpoint, parameters, json = self.get_attributes(endpoint, parameters, json)
+        if self.pk:
+            r = requests.get(self.url + endpoint + str(self.pk), params=parameters, json=json)
+        else:
+            r = requests.get(self.url + endpoint, params=parameters, json=json)
+        return r.json()
+
+    def post_request(self, endpoint=None, parameters=None, json=None):
+        endpoint, parameters, json = self.get_attributes(endpoint, parameters, json)
+        if self.pk:
+            r = requests.post(self.url + endpoint + str(self.pk)+'/', params=parameters, json=json)
+        else:
+            r = requests.post(self.url + endpoint, params=parameters, json=json)
+        return r.json()
+
+
+class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
     template = 'portal_web/home.html'
     login_url = reverse_lazy('portal_web:login')
+
+    endpoint = 'player_stats/'
+
+    def update_statistics(self):
+        endpoint = 'detailed_stats/'
+        self.post_request(endpoint=endpoint)
 
     def get(self, request, *args, **kwargs):
         player_profile = PlayerProfile.objects.filter(user=request.user).first()
         if not player_profile:
             return render(request, 'portal_web/set_profile.html')
-        context = {'profile': player_profile}
+        self.pk = player_profile.player_id
+        self.update_statistics()
+        statistics = self.get_response()
+        context = {'profile': player_profile, 'statistics': statistics}
         return render(request, self.template, context)
 
 
@@ -37,22 +81,6 @@ class SignUpView(CreateView):
         user = form.save()
         login(self.request, user, backend='django.contrib.auth.backends.ModelBackend')
         return super().form_valid(form)
-
-
-class StatisticsAPIMixin:
-    """Mixing to work with statistics API. Endpoint must be specified"""
-    url = 'http://statapp:9000/api/'
-    endpoint = None
-    parameters = None
-    json = None
-
-    def get_response(self):
-        r = requests.get(self.url + self.endpoint, params=self.parameters, json=self.json)
-        return r.json()
-
-    def post_request(self):
-        r = requests.post(self.url + self.endpoint, params=self.parameters, json=self.json)
-        return r.json()
 
 
 class WGPlayerSearchView(LoginRequiredMixin, StatisticsAPIMixin, View):
@@ -80,3 +108,14 @@ class CreateProfileView(LoginRequiredMixin, StatisticsAPIMixin, View):
         self.json = {'player_id': player_id}
         stat_response = self.post_request()
         return redirect(reverse_lazy('portal_web:index'))
+
+
+class DetailedStatView(LoginRequiredMixin, StatisticsAPIMixin, View):
+    endpoint = 'detailed_stats/'
+    pk = None
+
+    def get(self, request, *args, **kwargs):
+        self.pk = request.GET.get('player_id')
+        detailed_stat = self.get_response()
+        context = {'detailed_stat': detailed_stat}
+        return render(request, 'portal_web/detailed_stats.html', context)
