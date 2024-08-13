@@ -70,6 +70,7 @@ class DetailedStatView(APIView):
 
 
 class PlayerStatView(generics.RetrieveAPIView):
+    """Returns player general statistics"""
     serializer_class = PlayerStatsSerializer
 
     def get_object(self):

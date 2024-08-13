@@ -1,0 +1,37 @@
+{% extends 'portal_web/base.html' %}
+
+{% block content %}
+<div class="container">
+    <form method="post" action="{% url 'portal_web:profile' %}">
+        {% csrf_token %}
+        <div class="row">
+            <label for="staticNickname" class="col-sm-2 col-form-label">Nickname:</label>
+            <div class="col-3">
+                <input type="text" readonly class="form-control-plaintext" id="staticNickname" value="{{ profile.nickname }}">
+            </div>
+        </div>
+        <div class="row">
+            <label for="staticPlayerID" class="col-sm-2 col-form-label">Player ID:</label>
+            <div class="col-3">
+                <input type="text" readonly class="form-control-plaintext" id="staticPlayerID" value="{{ profile.player_id }}">
+            </div>
+        </div>
+        <div class="row">
+            <label for="staticPremium" class="col-sm-2 col-form-label">Premium:</label>
+            <div class="col-3">
+                <input type="text" readonly class="form-control-plaintext" id="staticPremium" value="{{ premium }}">
+            </div>
+        </div>
+        <div class="row">
+            <label for="inputDesiredWN8" class="col-sm-2 col-form-label">Desired WN8:</label>
+            <div class="col-3">
+                <input name="desired_wn8" type="number" max="9999" class="form-control" id="inputDesiredWN8" value="{{ profile.desired_wn8 }}">
+            </div>
+            <div class="col">
+              <button type="submit" class="btn btn-primary mb-3">Save</button>
+            </div>
+        </div>
+    </form>
+</div>
+
+{% endblock %}
