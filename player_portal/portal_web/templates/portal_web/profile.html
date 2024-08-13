@@ -1,0 +1,54 @@
+{% extends 'portal_web/base.html' %}
+
+{% block content %}
+<div class="container">
+    <form method="post" action="{% url 'portal_web:profile' %}">
+        {% csrf_token %}
+        <div class="row my-2">
+            <label for="staticNickname" class="col-sm-2 col-form-label">Nickname:</label>
+            <div class="col-4">
+                <input type="text" readonly class="form-control-plaintext" id="staticNickname" value="{{ profile.nickname }}">
+            </div>
+        </div>
+        <div class="row my-2">
+            <label for="staticPlayerID" class="col-sm-2 col-form-label">Player ID:</label>
+            <div class="col-3">
+                <input type="text" readonly class="form-control-plaintext" id="staticPlayerID" value="{{ profile.player_id }}">
+            </div>
+        </div>
+        <div class="row my-2">
+            <label for="staticPremium" class="col-sm-2 col-form-label">Premium:</label>
+            <div class="col-2">
+                <input type="text" readonly class="form-control-plaintext" id="staticPremium" value="{% if premium %}Expires: {{ profile.premium_expires.date }} {% else %} No subscription {% endif %}">
+            </div>
+            <div class="col">
+                <div class="d-grid gap-2 col-2">
+                    <a class="btn btn-primary {% if premium%}disabled{% endif %}" href="{% url 'portal_web:subscription' %}" role="button">Upgrade</a>
+                </div>
+            </div>
+        </div>
+        <div class="row my-2">
+            <label for="inputDesiredWN8" class="col-sm-2 col-form-label">Desired WN8:</label>
+            <div class="col-2">
+                <input name="desired_wn8" type="number" max="9999" class="form-control" id="inputDesiredWN8" value="{{ profile.desired_wn8 }}">
+            </div>
+            <div class="col">
+                <div class="d-grid gap-2 col-2">
+                    <button type="submit" class="btn btn-primary mb-3">Save</button>
+                </div>
+            </div>
+        </div>
+    </form>
+    <div>
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+            <li {% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    </div>
+
+</div>
+
+{% endblock %}

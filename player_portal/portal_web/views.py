@@ -1,14 +1,17 @@
 from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
-from django.http import JsonResponse
-from django.views.generic import TemplateView, View
+from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import Permission
 from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LoginView
+from django.contrib import messages
 from .forms import SignUpForm, SignInForm
 from .models import PlayerProfile
+from .utils import Puzzle
 import requests
+import datetime
 
 
 class StatisticsAPIMixin:
@@ -119,3 +122,44 @@ class DetailedStatView(LoginRequiredMixin, StatisticsAPIMixin, View):
         detailed_stat = self.get_response()
         context = {'detailed_stat': detailed_stat}
         return render(request, 'portal_web/detailed_stats.html', context)
+
+
+class ProfileView(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        user = request.user
+        profile = PlayerProfile.objects.filter(user=user).first()
+        context = {'profile': profile, 'premium': user.has_perm('portal_web.premium_account')}
+        return render(request, 'portal_web/profile.html', context)
+
+    def post(self, request, *args, **kwargs):
+        user = request.user
+        desired_wn8 = request.POST.get('desired_wn8')
+        profile = PlayerProfile.objects.filter(user=user).first()
+        profile.desired_wn8 = desired_wn8
+        profile.save()
+        context = {'profile': profile, 'premium': user.has_perm('portal_web.premium_account')}
+        return render(request, 'portal_web/profile.html', context)
+
+
+class SubscriptionView(LoginRequiredMixin, View):
+
+    def get(self, request, *args, **kwargs):
+        puzzle = Puzzle()
+        return render(request, 'portal_web/subscription.html', {'puzzle': puzzle})
+
+    def post(self, request, *args, **kwargs):
+        a = int(request.POST.get('a'))
+        b = int(request.POST.get('b'))
+        result = int(request.POST.get('result'))
+        if result == a + b:
+            permission = Permission.objects.get(name='User has access to premium features')
+            user = request.user
+            user.user_permissions.add(permission)
+            profile = PlayerProfile.objects.filter(user=user).first()
+            profile.premium_expires = datetime.datetime.now() + datetime.timedelta(days=2)
+            profile.save()
+            messages.success(request, 'Your subscription was successful!')
+        else:
+            messages.error(request, 'Premium subscription failed')
+        return redirect(reverse_lazy('portal_web:profile'))

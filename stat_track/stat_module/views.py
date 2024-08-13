@@ -50,7 +50,7 @@ class DetailedStatView(APIView):
 
     def get(self, request, *args, **kwargs):
         player_id = kwargs.get('player_id')
-        player_stat = DetailedStats.objects.filter(player__player_id=player_id).filter(actual=True).all()
+        player_stat = DetailedStats.objects.filter(player__player_id=player_id).filter(actual=True).order_by('-tank_battles')
         response = []
         for item in player_stat:
             tank_stat = {
@@ -70,6 +70,7 @@ class DetailedStatView(APIView):
 
 
 class PlayerStatView(generics.RetrieveAPIView):
+    """Returns player general statistics"""
     serializer_class = PlayerStatsSerializer
 
     def get_object(self):
