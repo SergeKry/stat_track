@@ -11,8 +11,12 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 """
 
 from pathlib import Path
+
 import os
 from dotenv import load_dotenv
+
+from .celery import app
+from celery.schedules import crontab
 
 # Load environment variables from .env file
 load_dotenv()
@@ -30,7 +34,7 @@ SECRET_KEY = 'django-insecure-+s4!=q^88l#-_tkn@!o&ro*77&plve!w@o*5t+tjcniuo0hkus
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -44,6 +48,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'celery',
+    'rest_framework',
+    'drf_yasg',
 ]
 
 MIDDLEWARE = [
@@ -177,9 +183,6 @@ CELERY_BROKER_URL = "redis://redis:6379/0"
 CELERY_RESULT_BACKEND = "redis://redis:6379/0"
 
 # Celery tasks
-from .celery import app
-from celery.schedules import crontab
-
 app.conf.beat_schedule = {
     'update-tank-list': {
         'task': 'stat_module.tasks.update_tank_list',

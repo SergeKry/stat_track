@@ -1,0 +1,30 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col"></th>
+            <th scope="col">Tank</th>
+            <th scope="col">Type</th>
+            <th scope="col">Tier</th>
+            <th scope="col">Nation</th>
+            <th scope="col">Battles</th>
+            <th scope="col">WN8</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for item in detailed_stat %}
+        <tr>
+            <th scope="row"><img src="{{ item.contour_icon }}"></th>
+            <td>{{ item.tank_name }}</td>
+            <td>{{ item.tank_type }}</td>
+            <td>{{ item.tank_tier }}</td>
+            <td>{{ item.tank_nation }}</td>
+            <td>{{ item.tank_battles }}</td>
+            <td>{{ item.tank_wn8 }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+
+
+

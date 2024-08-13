@@ -12,14 +12,13 @@
             </div>
             {{ form.username }}
         </div>
-        <span>{{ form.errors.username }}</span>
         <div class="input-group mb-3">
     	    <div class="input-group-prepend">
 		        <span class="input-group-text"> <i class="fa fa-envelope">P</i> </span>
 		    </div>
             {{ form.password }}
         </div>
-        <span>{{ form.errors.password }}</span>
+        <span>{{ form.non_field_errors }}</span>
         <div class="d-grid gap-2">
             <button type="submit" class="btn btn-primary" type="button">Log In</button>
             <a class="btn btn-outline-primary" href="{% url 'portal_web:sign_up' %}" role="button">Create an account</a>
