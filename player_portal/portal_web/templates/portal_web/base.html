@@ -15,7 +15,7 @@
       <a class="nav-link link-light" href="{% url 'portal_web:index' %}">STATISTICS</a>
     </li>
     <li class="nav-item">
-      <a class="nav-link link-light" href="#">BOOST RECOMENDATIONS</a>
+      <a class="nav-link link-light" href="{% url 'portal_web:boost' %}">BOOST RECOMENDATIONS</a>
     </li>
     {% if request.user.is_authenticated %}
       <li class="nav-item dropdown">

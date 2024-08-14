@@ -7,7 +7,8 @@ from .views import (IndexView,
                     CreateProfileView,
                     DetailedStatView,
                     ProfileView,
-                    SubscriptionView
+                    SubscriptionView,
+                    BoostView,
                     )
 
 app_name = 'portal_web'
@@ -21,4 +22,5 @@ urlpatterns = [
     path('detailed_stats/', DetailedStatView.as_view(), name='detailed_stats'),
     path('profile/', ProfileView.as_view(), name='profile'),
     path('subscription/', SubscriptionView.as_view(), name='subscription'),
+    path('boost/', BoostView.as_view(), name='boost'),
 ]

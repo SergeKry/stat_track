@@ -2,7 +2,7 @@ from django.contrib.auth import login
 from django.shortcuts import render, redirect
 from django.urls import reverse_lazy
 from django.views.generic import View
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Permission
 from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LoginView
@@ -163,3 +163,10 @@ class SubscriptionView(LoginRequiredMixin, View):
         else:
             messages.error(request, 'Premium subscription failed')
         return redirect(reverse_lazy('portal_web:profile'))
+
+
+class BoostView(LoginRequiredMixin, PermissionRequiredMixin, StatisticsAPIMixin, View):
+    permission_required = 'portal_web.premium_account'
+
+    def get(self, request, *args, **kwargs):
+        return render(request, 'portal_web/boost.html')

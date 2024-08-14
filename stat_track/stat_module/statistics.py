@@ -69,7 +69,7 @@ class TankStatistics:
                                'tank_wn8': tank_stat.wn8})
 
             # Checking if we have a record already. If number of battles didn't change, we do not create a duplicate
-            latest_stat = DetailedStats.objects.filter(tank=tank_stat.tank).filter(actual=True).first()
+            latest_stat = DetailedStats.objects.filter(player=self.player).filter(tank=tank_stat.tank).filter(actual=True).first()
             if latest_stat:
                 if latest_stat.tank_battles == tank_stat.battles:
                     continue
