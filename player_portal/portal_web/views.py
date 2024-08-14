@@ -103,9 +103,6 @@ class CreateProfileView(LoginRequiredMixin, StatisticsAPIMixin, View):
     endpoint = 'create_player/'
     json = None
 
-    def get(self, request, *args, **kwargs):
-        pass
-
     def post(self, request, *args, **kwargs):
         player_id = request.POST.get('player')
         player_nickname = request.POST.get('nickname')
