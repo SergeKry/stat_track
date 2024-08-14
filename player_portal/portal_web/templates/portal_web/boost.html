@@ -2,7 +2,42 @@
 
 {% block content %}
 <div class="container">
-    <h3>Hello in premium section</h3>
+    <h3 class="text-center my-4">Boost recommendations</h3>
+    {% if not request.user.playerprofile.desired_wn8 %}
+        <div class="card text-center my-3">
+            <div class="card-header">
+                Hint
+            </div>
+            <div class="card-body">
+                <h5 class="card-title">Receive better recommendations</h5>
+                <p class="card-text">Set your desired WN8 in Profile Settings to get better recommendations</p>
+                <a href="{% url 'portal_web:profile' %}" class="btn btn-primary">Go to Profile</a>
+            </div>
+        </div>
+    {% endif %}
+    {%for tank in boost_tanks %}
+        {% if forloop.counter0|divisibleby:"4" %}
+        <div class="row">
+        {% endif %}
+            <div class="col">
+                <div class="card m-2" style="width: 18rem;">
+                    <div class="card-header">
+                        <h5 class="card-title">{{ tank.tank_name }}</h5>
+                        <h6 class="card-subtitle mb-2 text-muted">{{ tank.tank_type }} Tier: {{ tank.tank_tier }}</h6>
+                    </div>
+                    <img src="{{ tank.big_icon }}" class="card-img-top" alt="...">
+                      <div class="card-body">
+                          <ul class="list-group list-group-flush">
+                              <li class="list-group-item">Battles: {{tank.tank_battles }}</li>
+                              <li class="list-group-item">WN8: {{ tank.tank_wn8 }}</li>
+                          </ul>
+                      </div>
+                </div>
+            </div>
+        {% if forloop.counter0|add:"1"|divisibleby:"4" %}
+            </div>
+        {% endif %}
+    {% endfor %}
 </div>
 
 {% endblock %}

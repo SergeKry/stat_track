@@ -9,8 +9,8 @@
         <div class="col"><h2>{{ profile.nickname }}</h2><span hidden id="playerID">{{ profile.player_id }}</span></div>
     </div>
     <div class="row">
-        <div class="column">Battles: {{ statistics.battles }}</div>
-        <div class="column">WN8: {{ statistics.wn8 }}</div>
+        <div class="column">Battles: {{ profile.battles }}</div>
+        <div class="column">WN8: {{ profile.current_wn8 }}</div>
     </div>
     <div class="row">
             <div class="container-fluid my-2" id="chart" style="border: 2px solid #4f4f4f; border-radius: 5px; height: 200px">

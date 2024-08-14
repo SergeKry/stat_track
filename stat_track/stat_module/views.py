@@ -50,8 +50,14 @@ class DetailedStatView(APIView):
 
     def get(self, request, *args, **kwargs):
         player_id = kwargs.get('player_id')
-        player_stat = DetailedStats.objects.filter(player__player_id=player_id).filter(actual=True).order_by('-tank_battles')
+        rating = self.request.query_params.get('rating')
+        queryset = DetailedStats.objects.filter(player__player_id=player_id).filter(actual=True)
         response = []
+        if rating:
+            battles = 100
+            player_stat = queryset.filter(tank_battles__gte=battles).filter(tank_wn8__lt=rating).order_by('tank_wn8')
+        else:
+            player_stat = queryset.order_by('-tank_battles')
         for item in player_stat:
             tank_stat = {
                 'wg_tank_id': item.tank.wg_tank_id,
@@ -64,6 +70,7 @@ class DetailedStatView(APIView):
                 'big_icon': item.tank.big_icon,
                 'tank_battles': item.tank_battles,
                 'tank_wn8': item.tank_wn8,
+                'weighted': (item.tank_wn8-int(rating))*item.tank_battles if rating else 0,
             }
             response.append(tank_stat)
         return Response(response, status=status.HTTP_200_OK)

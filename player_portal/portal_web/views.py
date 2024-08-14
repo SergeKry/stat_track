@@ -65,7 +65,9 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
         self.pk = player_profile.player_id
         self.update_statistics()
         statistics = self.get_response()
-        context = {'profile': player_profile, 'statistics': statistics}
+        player_profile.battles, player_profile.current_wn8 = statistics['battles'], statistics['wn8']
+        player_profile.save()
+        context = {'profile': player_profile}
         return render(request, self.template, context)
 
 
@@ -167,6 +169,16 @@ class SubscriptionView(LoginRequiredMixin, View):
 
 class BoostView(LoginRequiredMixin, PermissionRequiredMixin, StatisticsAPIMixin, View):
     permission_required = 'portal_web.premium_account'
+    endpoint = 'detailed_stats/'
 
     def get(self, request, *args, **kwargs):
-        return render(request, 'portal_web/boost.html')
+        user_profile = PlayerProfile.objects.filter(user=request.user).first()
+        self.pk = user_profile.player_id
+        if user_profile.desired_wn8:
+            self.parameters = {'rating': user_profile.desired_wn8}
+        else:
+            self.parameters = {'rating': int(user_profile.current_wn8)}
+        boost_tanks = self.get_response()
+        boost_tanks_sorted = sorted(boost_tanks, key=lambda t: t['weighted'])
+        context = {'boost_tanks': boost_tanks_sorted}
+        return render(request, 'portal_web/boost.html', context)

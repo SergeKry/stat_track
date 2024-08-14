@@ -19,12 +19,24 @@
         <div class="row my-2">
             <label for="staticPremium" class="col-sm-2 col-form-label">Premium:</label>
             <div class="col-2">
-                <input type="text" readonly class="form-control-plaintext" id="staticPremium" value="{% if premium %}Expires: {{ profile.premium_expires.date }} {% else %} No subscription {% endif %}">
+                <input type="text" readonly class="form-control-plaintext" id="staticPremium" value="{% if premium %}Expires: {{ profile.premium_expires.date }} {% else %}No subscription {% endif %}">
             </div>
             <div class="col">
                 <div class="d-grid gap-2 col-2">
                     <a class="btn btn-primary {% if premium%}disabled{% endif %}" href="{% url 'portal_web:subscription' %}" role="button">Upgrade</a>
                 </div>
+            </div>
+        </div>
+        <div class="row my-2">
+            <label for="staticBattles" class="col-sm-2 col-form-label">Battles:</label>
+            <div class="col-3">
+                <input type="text" readonly class="form-control-plaintext" id="staticBattles" value="{{ profile.battles }}">
+            </div>
+        </div>
+        <div class="row my-2">
+            <label for="staticCurrentWN8" class="col-sm-2 col-form-label">Current WN8:</label>
+            <div class="col-3">
+                <input type="text" readonly class="form-control-plaintext" id="staticCurrentWN8" value="{{ profile.current_wn8 }}">
             </div>
         </div>
         <div class="row my-2">
