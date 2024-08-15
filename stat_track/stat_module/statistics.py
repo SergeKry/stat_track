@@ -57,30 +57,31 @@ class TankStatistics:
 
     def update_individual_stats(self) -> list:
         tank_stats = []
-        for item in self.stat_json:
-            tank_stat = IndividualTankStatistics(item)
+        if self.stat_json:
+            for item in self.stat_json:
+                tank_stat = IndividualTankStatistics(item)
 
-            # tank_stat may contain old legacy data that cannot be mapped. So we skip it.
-            if not tank_stat.tank:
-                continue
-
-            tank_stats.append({'tank_id': tank_stat.tank.wg_tank_id,
-                               'tank_battles': tank_stat.battles,
-                               'tank_wn8': tank_stat.wn8})
-
-            # Checking if we have a record already. If number of battles didn't change, we do not create a duplicate
-            latest_stat = DetailedStats.objects.filter(player=self.player).filter(tank=tank_stat.tank).filter(actual=True).first()
-            if latest_stat:
-                if latest_stat.tank_battles == tank_stat.battles:
+                # tank_stat may contain old legacy data that cannot be mapped. So we skip it.
+                if not tank_stat.tank:
                     continue
-                latest_stat.actual = False
-            DetailedStats.objects.create(
-                player=self.player,
-                tank=tank_stat.tank,
-                tank_battles=tank_stat.battles,
-                tank_wn8=tank_stat.wn8,
-                actual=True,
-            )
+
+                tank_stats.append({'tank_id': tank_stat.tank.wg_tank_id,
+                                   'tank_battles': tank_stat.battles,
+                                   'tank_wn8': tank_stat.wn8})
+
+                # Checking if we have a record already. If number of battles didn't change, we do not create a duplicate
+                latest_stat = DetailedStats.objects.filter(player=self.player).filter(tank=tank_stat.tank).filter(actual=True).first()
+                if latest_stat:
+                    if latest_stat.tank_battles == tank_stat.battles:
+                        continue
+                    latest_stat.actual = False
+                DetailedStats.objects.create(
+                    player=self.player,
+                    tank=tank_stat.tank,
+                    tank_battles=tank_stat.battles,
+                    tank_wn8=tank_stat.wn8,
+                    actual=True,
+                )
         return tank_stats
 
     def update_general_stats(self, tank_stats: list):
@@ -104,10 +105,17 @@ class TankStatistics:
 
     def save(self):
         tank_stats = self.update_individual_stats()
-        general_stats = self.update_general_stats(tank_stats)
+        if tank_stats:
+            general_stats = self.update_general_stats(tank_stats)
+            return {'player': self.player.player_id,
+                    'player_battles': general_stats.battles,
+                    'player_wn8': general_stats.wn8,
+                    'tanks_updated': len(tank_stats),
+                    'individual_stats': tank_stats,
+                    }
         return {'player': self.player.player_id,
-                'player_battles': general_stats.battles,
-                'player_wn8': general_stats.wn8,
-                'tanks_updated': len(tank_stats),
-                'individual_stats': tank_stats,
+                'player_battles': 0,
+                'player_wn8': 0,
+                'tanks_updated': 0,
+                'individual_stats': None,
                 }

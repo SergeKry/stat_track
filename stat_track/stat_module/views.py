@@ -81,5 +81,11 @@ class PlayerStatView(generics.RetrieveAPIView):
     serializer_class = PlayerStatsSerializer
 
     def get_object(self):
-        player_stats = PlayerStats.objects.get(player__player_id=self.kwargs['player_id'])
-        return player_stats
+        try:
+            player_stats = PlayerStats.objects.get(player__player_id=self.kwargs['player_id'])
+            return player_stats
+        except PlayerStats.DoesNotExist:
+            return {
+                'battles':0,
+                'wn8': 0
+            }
