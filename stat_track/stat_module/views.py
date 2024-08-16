@@ -76,16 +76,22 @@ class DetailedStatView(APIView):
         return Response(response, status=status.HTTP_200_OK)
 
 
-class PlayerStatView(generics.RetrieveAPIView):
+class PlayerStatView(generics.ListAPIView):
     """Returns player general statistics"""
     serializer_class = PlayerStatsSerializer
+    lookup_field = 'player_id'
 
-    def get_object(self):
-        try:
-            player_stats = PlayerStats.objects.get(player__player_id=self.kwargs['player_id'])
-            return player_stats
-        except PlayerStats.DoesNotExist:
-            return {
-                'battles':0,
-                'wn8': 0
-            }
+    def get_queryset(self):
+        player_id = self.kwargs['player_id']
+        return PlayerStats.objects.filter(player__player_id=player_id)
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.get_queryset()
+        if not queryset.exists():
+            return Response([{
+                'battles': 0,
+                'wn8': 0,
+                'actual': 'true'
+            }], status=status.HTTP_200_OK)
+        serializer = self.get_serializer(queryset, many=True)
+        return Response(serializer.data)

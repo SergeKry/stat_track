@@ -12,6 +12,7 @@ from .models import PlayerProfile
 from .utils import Puzzle
 import requests
 import datetime
+import json
 
 
 class StatisticsAPIMixin:
@@ -64,6 +65,14 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
         endpoint = 'detailed_stats/'
         self.post_request(endpoint=endpoint)
 
+    def build_line_chart_data(self, statistics: list) -> list:
+        data = []
+        for item in statistics:
+            x = item['battles']
+            y = item['wn8']
+            data.append({'x': x, 'y': y})
+        return data
+
     def get(self, request, *args, **kwargs):
         player_profile = PlayerProfile.objects.filter(user=request.user).first()
         if not player_profile:
@@ -72,12 +81,16 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
         self.update_statistics()
         statistics = self.get_response()
         try:
-            player_profile.battles, player_profile.current_wn8 = statistics['battles'], statistics['wn8']
+            player_profile.battles, player_profile.current_wn8 = statistics[-1]['battles'], statistics[-1]['wn8']
             player_profile.save()
-            context = {'profile': player_profile}
+            line_chart_data = self.build_line_chart_data(statistics)
+            context = {'profile': player_profile, 'line_chart_data': line_chart_data}
             return render(request, self.template, context)
         except TypeError:
             messages.error(request,  statistics)
+            return render(request, self.template)
+        except KeyError as err:
+            messages.error(request, f'Cannot access key {err}')
             return render(request, self.template)
 
 
