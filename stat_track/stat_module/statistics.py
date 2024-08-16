@@ -1,5 +1,7 @@
 from django.conf import settings
 import requests
+import datetime
+from datetime import timezone
 from .models import Tank, DetailedStats, Player, PlayerStats
 
 
@@ -94,14 +96,21 @@ class TankStatistics:
         avrg_wn8 = round(total_wn8/total_battles, 2)
 
         latest_stat = PlayerStats.objects.filter(player=self.player).last()
-        if not latest_stat or latest_stat.battles != total_battles:
+        # avoiding duplicates in DB here
+        if latest_stat.created_at < datetime.datetime.now(timezone.utc) - datetime.timedelta(hours=1):
+            return latest_stat
+        if latest_stat and latest_stat.battles == total_battles:
+            return latest_stat
+        else:
             player_stat = PlayerStats.objects.create(
                 player=self.player,
                 battles=total_battles,
-                wn8=avrg_wn8
+                wn8=avrg_wn8,
+                actual=True
             )
-            return player_stat
-        return latest_stat
+            if latest_stat:
+                latest_stat.actual = False
+        return player_stat
 
     def save(self):
         tank_stats = self.update_individual_stats()

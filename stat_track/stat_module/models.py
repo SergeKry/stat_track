@@ -18,7 +18,7 @@ class Tank(models.Model):
 
 
 class Player(models.Model):
-    player_id = models.IntegerField()
+    player_id = models.IntegerField(unique=True)
     premium = models.BooleanField(default=False)
 
 
@@ -27,6 +27,7 @@ class PlayerStats(models.Model):
     battles = models.IntegerField(default=0)
     wn8 = models.FloatField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
+    actual = models.BooleanField(default=True)
 
     class Meta:
         ordering = ['created_at']

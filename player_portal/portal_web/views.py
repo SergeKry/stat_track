@@ -37,7 +37,10 @@ class StatisticsAPIMixin:
             r = requests.get(self.url + endpoint + str(self.pk), params=parameters, json=json)
         else:
             r = requests.get(self.url + endpoint, params=parameters, json=json)
-        return r.json()
+        try:
+            return r.json()
+        except:
+            return 'Oops, something went wrong. GET method. Json cannot be parsed'
 
     def post_request(self, endpoint=None, parameters=None, json=None):
         endpoint, parameters, json = self.get_attributes(endpoint, parameters, json)
@@ -45,7 +48,10 @@ class StatisticsAPIMixin:
             r = requests.post(self.url + endpoint + str(self.pk)+'/', params=parameters, json=json)
         else:
             r = requests.post(self.url + endpoint, params=parameters, json=json)
-        return r.json()
+        try:
+            return r.json()
+        except:
+            return 'Oops, something went wrong. POST method. Json cannot be parsed'
 
 
 class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
@@ -65,10 +71,14 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
         self.pk = player_profile.player_id
         self.update_statistics()
         statistics = self.get_response()
-        player_profile.battles, player_profile.current_wn8 = statistics['battles'], statistics['wn8']
-        player_profile.save()
-        context = {'profile': player_profile}
-        return render(request, self.template, context)
+        try:
+            player_profile.battles, player_profile.current_wn8 = statistics['battles'], statistics['wn8']
+            player_profile.save()
+            context = {'profile': player_profile}
+            return render(request, self.template, context)
+        except TypeError:
+            messages.error(request,  statistics)
+            return render(request, self.template)
 
 
 class CustomLoginView(LoginView):
