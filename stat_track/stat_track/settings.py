@@ -187,5 +187,9 @@ app.conf.beat_schedule = {
     'update-tank-list': {
         'task': 'stat_module.tasks.update_tank_list',
         'schedule': crontab(hour='0', minute='0'),
+    },
+    'refresh-player-statistics': {
+        'task': 'stat_module.tasks.refresh_player_statistics',
+        'schedule': crontab(hour='*/2'),
     }
 }
