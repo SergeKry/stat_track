@@ -1,5 +1,7 @@
 {% extends 'portal_web/base.html' %}
 
+{% load static %}
+
 {% block content %}
 <body>
 <article class="card-body mx-auto w-50">
@@ -9,12 +11,15 @@
             <input type="text" class="form-control" id="nicknameSearch" name="username" placeholder="WoT Nickname" value="{{ username }}">
         </div>
         <div class="col-3 d-grid gap-2">
-            <button type="submit" class="btn btn-primary mb-3">Search</button>
+            <button type="submit" id="submitButton" class="btn btn-primary mb-3">Search</button>
         </div>
     </form>
     {% if players %}
     {% include 'portal_web/player_search_results.html' %}
     {% endif %}
 </article>
+
+<script src="{% static 'portal_web/js/set_profile_utils.js' %}"></script>
+
 </body>
 {% endblock %}

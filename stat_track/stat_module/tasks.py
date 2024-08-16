@@ -1,7 +1,8 @@
 import json
 import urllib.request
 import requests
-from .models import Tank
+from .models import Tank, Player
+from .statistics import TankStatistics
 from django.conf import settings
 from celery import shared_task
 
@@ -53,3 +54,15 @@ def update_tank_list():
         )
     get_expected_stats()
 
+
+@shared_task()
+def update_stat(player_id: int):
+    stats = TankStatistics(player_id)
+    stats.save()
+
+
+@shared_task()
+def refresh_player_statistics():
+    players = Player.objects.all()
+    for item in players:
+        update_stat.delay(item.player_id)
