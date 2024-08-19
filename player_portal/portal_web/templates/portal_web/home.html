@@ -6,26 +6,40 @@
 {% block content %}
 <body>
 <div class="container mt-3">
-    <div class="row">
-        <div class="col-6 my-2 d-flex flex-column justify-content-between">
-            <div class="card">
+    <div class="row mb-2">
+        <div class="col my-2 d-flex flex-column justify-content-between">
+            <div class="card flex-fill">
                 <h5 class="card-header">{{ profile.nickname }}</h5>
                 <span hidden id="playerID">{{ profile.player_id }}</span>
                 <div class="card-body">
-                    <p>Battles: {{ profile.battles }}</p>
-                    <p>WN8: {{ profile.current_wn8 }}</p>
+                        <div class="row">
+                            <div class="col-2">
+                                Battles:
+                            </div>
+                            <div class="col text-left">
+                                {{ profile.battles }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-2">
+                                WN8:
+                            </div>
+                            <div class="col text-left">
+                                {{ profile.current_wn8 }}
+                            </div>
+                        </div>
                 </div>
             </div>
-            <div class="card">
+            <div class="card flex-fill mt-2">
                 <div class="card-header text-center">
                     One week summary
                 </div>
                 <div class="card-body">
                     <div class="row">
-                        <div class="col">
-                            Battles changed:
+                        <div class="col-3">
+                            Battles played:
                         </div>
-                        <div class="col text-end">
+                        <div class="col-2 text-end">
                             {% if widget_data.battles_changed > 0%}+{% endif %}{{ widget_data.battles_changed }}
                         </div>
                         <div class="col">
@@ -33,10 +47,10 @@
                         </div>
                     </div>
                     <div class="row">
-                        <div class="col">
+                        <div class="col-3">
                             WN8 changed:
                         </div>
-                        <div class="col text-end">
+                        <div class="col-2 text-end">
                             {% if widget_data.wn8_changed > 0 %}+{% endif %}{{ widget_data.wn8_changed }}
                         </div>
                         <div class="col">
