@@ -76,6 +76,8 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
     def build_week_widget_data(self, statistics: list) -> dict:
         one_week = datetime.datetime.now(timezone.utc) - datetime.timedelta(days=7)
         seven_days_data = [item for item in statistics if convert_timestamp_from_json(item['created_at']) > one_week]
+        if not seven_days_data:
+            return {'battles_changed': 0, 'wn8_changed': round(0, 2)}
         latest = seven_days_data[-1]
         first = seven_days_data[0]
         battles_changed = latest['battles'] - first['battles']

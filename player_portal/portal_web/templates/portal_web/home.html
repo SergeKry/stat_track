@@ -29,7 +29,7 @@
                             {% if widget_data.battles_changed > 0%}+{% endif %}{{ widget_data.battles_changed }}
                         </div>
                         <div class="col">
-                            {% if widget_data.battles_changed > 0 %}{% bs_icon 'arrow-up-circle-fill' color='green' %}{% else %}{% bs_icon 'arrow-down-circle-fill' color='red' %}{% endif %}
+                            {% if widget_data.battles_changed > 0 %}{% bs_icon 'arrow-up-circle-fill' color='green' %}{% elif widget_data.battles_changed < 0 %}{% bs_icon 'arrow-down-circle-fill' color='red' %}{% endif %}
                         </div>
                     </div>
                     <div class="row">
@@ -40,7 +40,7 @@
                             {% if widget_data.wn8_changed > 0 %}+{% endif %}{{ widget_data.wn8_changed }}
                         </div>
                         <div class="col">
-                            {% if widget_data.wn8_changed > 0 %}{% bs_icon 'arrow-up-circle-fill' color='green' %}{% else %}{% bs_icon 'arrow-down-circle-fill' color='red' %}{% endif %}
+                            {% if widget_data.wn8_changed > 0 %}{% bs_icon 'arrow-up-circle-fill' color='green' %}{% elif widget_data.wn8_changed < 0 %}{% bs_icon 'arrow-down-circle-fill' color='red' %}{% endif %}
                         </div>
                     </div>
                 </div>
