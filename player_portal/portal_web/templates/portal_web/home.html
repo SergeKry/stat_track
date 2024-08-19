@@ -7,47 +7,48 @@
 <body>
 <div class="container mt-3">
     <div class="row">
-        <div class="col"><h2>{{ profile.nickname }}</h2><span hidden id="playerID">{{ profile.player_id }}</span></div>
-    </div>
-    <div class="row">
-        <div class="column">Battles: {{ profile.battles }}</div>
-        <div class="column">WN8: {{ profile.current_wn8 }}</div>
-    </div>
-    <div class="row">
-            <div class="col-6 my-2" id="wn8chart">
-                <canvas id="leftChart" style="width:100%;max-height:300px; border: 2px solid lightgrey; border-radius: 5px"></canvas>
+        <div class="col-6 my-2 d-flex flex-column justify-content-between">
+            <div class="card">
+                <h5 class="card-header">{{ profile.nickname }}</h5>
+                <span hidden id="playerID">{{ profile.player_id }}</span>
+                <div class="card-body">
+                    <p>Battles: {{ profile.battles }}</p>
+                    <p>WN8: {{ profile.current_wn8 }}</p>
+                </div>
             </div>
-            <div class="col-6 my-2" id="statChangedWidget">
-                <div class="card h-100">
-                    <h5 class="card-header text-center">
-                        One week summary
-                    </h5>
-                    <div class="card-body">
-                    <div class="row">
-                    <div class="col">
-                        <p>Battles changed:</p>
-                    </div>
-                    <div class="col text-end">
-                        <p>{% if widget_data.battles_changed > 0%}+{% endif %}{{ widget_data.battles_changed }}</p>
-                    </div>
-                    <div class="col">
-                        <p>{% if widget_data.battles_changed > 0 %}{% bs_icon 'arrow-up-circle-fill' color='green' %}{% else %}{% bs_icon 'arrow-down-circle-fill' color='red' %}{% endif %}</p>
-                    </div>
-                    </div>
+            <div class="card">
+                <div class="card-header text-center">
+                    One week summary
+                </div>
+                <div class="card-body">
                     <div class="row">
                         <div class="col">
-                            <p>WN8 changed:</p>
+                            Battles changed:
                         </div>
                         <div class="col text-end">
-                            <p>{% if widget_data.wn8_changed > 0 %}+{% endif %}{{ widget_data.wn8_changed }}</p>
+                            {% if widget_data.battles_changed > 0%}+{% endif %}{{ widget_data.battles_changed }}
                         </div>
                         <div class="col">
-                            <p>{% if widget_data.wn8_changed > 0 %}{% bs_icon 'arrow-up-circle-fill' color='green' %}{% else %}{% bs_icon 'arrow-down-circle-fill' color='red' %}{% endif %}</p>
+                            {% if widget_data.battles_changed > 0 %}{% bs_icon 'arrow-up-circle-fill' color='green' %}{% elif widget_data.battles_changed < 0 %}{% bs_icon 'arrow-down-circle-fill' color='red' %}{% endif %}
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col">
+                            WN8 changed:
+                        </div>
+                        <div class="col text-end">
+                            {% if widget_data.wn8_changed > 0 %}+{% endif %}{{ widget_data.wn8_changed }}
+                        </div>
+                        <div class="col">
+                            {% if widget_data.wn8_changed > 0 %}{% bs_icon 'arrow-up-circle-fill' color='green' %}{% elif widget_data.wn8_changed < 0 %}{% bs_icon 'arrow-down-circle-fill' color='red' %}{% endif %}
+                        </div>
                     </div>
                 </div>
             </div>
+        </div>
+        <div class="col-6 my-2" id="wn8chart">
+            <canvas id="leftChart" style="width:100%;max-height:300px; border: 2px solid lightgrey; border-radius: 5px"></canvas>
+        </div>
     </div>
     <div class="accordion" id="accordionTanksStats">
         <div class="accordion-item">
