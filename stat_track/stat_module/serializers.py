@@ -16,4 +16,4 @@ class PlayerSerializer(serializers.ModelSerializer):
 class PlayerStatsSerializer(serializers.ModelSerializer):
     class Meta:
         model = PlayerStats
-        fields = ['battles', 'wn8', 'actual']
+        fields = ['battles', 'wn8', 'actual', 'created_at']
