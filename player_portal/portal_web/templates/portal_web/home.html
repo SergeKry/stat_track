@@ -1,6 +1,7 @@
 {% extends 'portal_web/base.html' %}
 
 {% load static %}
+{% load bootstrap_icons %}
 
 {% block content %}
 <body>
@@ -16,8 +17,36 @@
             <div class="col-6 my-2" id="wn8chart">
                 <canvas id="leftChart" style="width:100%;max-height:300px; border: 2px solid lightgrey; border-radius: 5px"></canvas>
             </div>
-            <div class="col-6 my-2" id="levelChart">
-                <canvas id="tankTierChart" style="width:100%;max-height:300px; border: 2px solid lightgrey; border-radius: 5px"></canvas>
+            <div class="col-6 my-2" id="statChangedWidget">
+                <div class="card h-100">
+                    <h5 class="card-header text-center">
+                        One week summary
+                    </h5>
+                    <div class="card-body">
+                    <div class="row">
+                    <div class="col">
+                        <p>Battles changed:</p>
+                    </div>
+                    <div class="col text-end">
+                        <p>{% if widget_data.battles_changed > 0%}+{% endif %}{{ widget_data.battles_changed }}</p>
+                    </div>
+                    <div class="col">
+                        <p>{% if widget_data.battles_changed > 0 %}{% bs_icon 'arrow-up-circle-fill' color='green' %}{% else %}{% bs_icon 'arrow-down-circle-fill' color='red' %}{% endif %}</p>
+                    </div>
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <p>WN8 changed:</p>
+                        </div>
+                        <div class="col text-end">
+                            <p>{% if widget_data.wn8_changed > 0 %}+{% endif %}{{ widget_data.wn8_changed }}</p>
+                        </div>
+                        <div class="col">
+                            <p>{% if widget_data.wn8_changed > 0 %}{% bs_icon 'arrow-up-circle-fill' color='green' %}{% else %}{% bs_icon 'arrow-down-circle-fill' color='red' %}{% endif %}</p>
+                        </div>
+                    </div>
+                    </div>
+                </div>
             </div>
     </div>
     <div class="accordion" id="accordionTanksStats">
@@ -40,30 +69,6 @@
 
 </div>
 <script src="{% static 'portal_web/js/home_utils.js' %}"></script>
-<script>
-
-    // Bar Chart
-    var xBarValues = ["Tier 1", "Tier 2", "Tier 3", "Tier 4", "Tier 5", "Tier 6", "Tier 7", "Tier 8", "Tier 9", "Tier 10"];
-    var yBarValues = [55, 221, 412, 1339, 2014, 2814, 2950, 7770, 4201, 6452];
-
-    new Chart("tankTierChart", {
-      type: "bar",
-      data: {
-        labels: xBarValues,
-        datasets: [{
-          backgroundColor: "blue",
-          data: yBarValues
-        }]
-      },
-      options: {
-        legend: {display: false},
-        title: {
-          display: true,
-          text: "Tanks by Tier"
-        }
-      }
-    });
-</script>
 </body>
 
 {% endblock %}

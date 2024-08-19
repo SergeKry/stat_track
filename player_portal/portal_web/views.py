@@ -9,10 +9,10 @@ from django.contrib.auth.views import LoginView
 from django.contrib import messages
 from .forms import SignUpForm, SignInForm
 from .models import PlayerProfile
-from .utils import Puzzle
+from .utils import Puzzle, convert_timestamp_from_json
 import requests
 import datetime
-import json
+from datetime import timezone
 
 
 class StatisticsAPIMixin:
@@ -73,6 +73,15 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
             data.append({'x': x, 'y': y})
         return data
 
+    def build_week_widget_data(self, statistics: list) -> dict:
+        one_week = datetime.datetime.now(timezone.utc) - datetime.timedelta(days=7)
+        seven_days_data = [item for item in statistics if convert_timestamp_from_json(item['created_at']) > one_week]
+        latest = seven_days_data[-1]
+        first = seven_days_data[0]
+        battles_changed = latest['battles'] - first['battles']
+        wn8_changed = latest['wn8'] - first['wn8']
+        return {'battles_changed': battles_changed, 'wn8_changed': round(wn8_changed, 2)}
+
     def get(self, request, *args, **kwargs):
         player_profile = PlayerProfile.objects.filter(user=request.user).first()
         if not player_profile:
@@ -84,11 +93,12 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
             player_profile.battles, player_profile.current_wn8 = statistics[-1]['battles'], statistics[-1]['wn8']
             player_profile.save()
             line_chart_data = self.build_line_chart_data(statistics)
-            context = {'profile': player_profile, 'line_chart_data': line_chart_data}
+            widget_data = self.build_week_widget_data(statistics)
+            context = {'profile': player_profile, 'line_chart_data': line_chart_data, 'widget_data': widget_data}
             return render(request, self.template, context)
-        except TypeError:
-            messages.error(request,  statistics)
-            return render(request, self.template)
+        # except TypeError:
+        #     messages.error(request,  statistics)
+        #     return render(request, self.template)
         except KeyError as err:
             messages.error(request, f'Cannot access key {err}')
             return render(request, self.template)

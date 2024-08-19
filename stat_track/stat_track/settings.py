@@ -190,6 +190,6 @@ app.conf.beat_schedule = {
     },
     'refresh-player-statistics': {
         'task': 'stat_module.tasks.refresh_player_statistics',
-        'schedule': crontab(minute='0', hour='*/2'),
+        'schedule': crontab(minute='0', hour='*/8'),
     }
 }
