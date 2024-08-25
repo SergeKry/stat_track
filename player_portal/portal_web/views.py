@@ -79,8 +79,8 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
         if not seven_days_data:
             return {'battles_changed': 0, 'wn8_changed': round(0, 2)}
         reference_point = len(seven_days_data) + 1
-        latest = statistics[-1]
         first = statistics[-reference_point]
+        latest = statistics[-1]
         battles_changed = latest['battles'] - first['battles']
         wn8_changed = latest['wn8'] - first['wn8']
         return {'battles_changed': battles_changed, 'wn8_changed': round(wn8_changed, 2)}
