@@ -78,8 +78,12 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
         seven_days_data = [item for item in statistics if convert_timestamp_from_json(item['created_at']) > one_week]
         if not seven_days_data:
             return {'battles_changed': 0, 'wn8_changed': round(0, 2)}
-        latest = seven_days_data[-1]
-        first = seven_days_data[0]
+        elif len(seven_days_data) == 1:
+            latest = statistics[-1]
+            first = statistics[-2]
+        else:
+            latest = seven_days_data[-1]
+            first = seven_days_data[0]
         battles_changed = latest['battles'] - first['battles']
         wn8_changed = latest['wn8'] - first['wn8']
         return {'battles_changed': battles_changed, 'wn8_changed': round(wn8_changed, 2)}
