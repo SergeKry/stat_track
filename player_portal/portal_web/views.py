@@ -99,9 +99,9 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
             widget_data = self.build_week_widget_data(statistics)
             context = {'profile': player_profile, 'line_chart_data': line_chart_data, 'widget_data': widget_data}
             return render(request, self.template, context)
-        # except TypeError:
-        #     messages.error(request,  statistics)
-        #     return render(request, self.template)
+        except TypeError:
+            messages.error(request,  statistics)
+            return render(request, self.template)
         except KeyError as err:
             messages.error(request, f'Cannot access key {err}')
             return render(request, self.template)
