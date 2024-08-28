@@ -61,10 +61,6 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
 
     endpoint = 'player_stats/'
 
-    def update_statistics(self):
-        endpoint = 'detailed_stats/'
-        self.post_request(endpoint=endpoint)
-
     def build_line_chart_data(self, statistics: list) -> list:
         data = []
         for item in statistics:
@@ -90,7 +86,6 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
         if not player_profile:
             return render(request, 'portal_web/set_profile.html')
         self.pk = player_profile.player_id
-        self.update_statistics()
         statistics = self.get_response()
         try:
             player_profile.battles, player_profile.current_wn8 = statistics[-1]['battles'], statistics[-1]['wn8']

@@ -44,7 +44,7 @@ class DetailedStatView(APIView):
     """Post method updates statistics of the user in DB. Get method returns user's statistics for all tanks"""
     def post(self, request, *args, **kwargs):
         player_id = kwargs.get('player_id')
-        player_stat = TankStatistics(player_id)
+        player_stat = TankStatistics(player_id, force=True)
         data = player_stat.save()
         return Response(data, status=status.HTTP_201_CREATED)
 
@@ -83,6 +83,8 @@ class PlayerStatView(generics.ListAPIView):
 
     def get_queryset(self):
         player_id = self.kwargs['player_id']
+        player_stat = TankStatistics(player_id)
+        player_stat.save()
         return PlayerStats.objects.filter(player__player_id=player_id)
 
     def list(self, request, *args, **kwargs):
