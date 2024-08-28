@@ -141,3 +141,9 @@ MESSAGE_TAGS = {
     messages.WARNING: 'text-warning',
     messages.ERROR: 'text-danger'
 }
+
+REDIS = {
+    'host': 'redis',
+    'port': 6379,
+    'decode_responses': True,
+}

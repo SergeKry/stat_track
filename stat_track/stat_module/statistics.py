@@ -53,10 +53,9 @@ class TankStatistics:
         r = requests.get(endpoint_url, params=params)
         return r.json()['data'][str(self.player.player_id)]
 
-    def __init__(self, player_id, force=False):
+    def __init__(self, player_id):
         self.player = Player.objects.filter(player_id=player_id).first()
         self.stat_json = self.get_user_stat()
-        self.force = force
 
     def update_individual_stats(self) -> list:
         tank_stats = []
@@ -98,10 +97,6 @@ class TankStatistics:
         avrg_wn8 = round(total_wn8/total_battles, 2)
 
         latest_stat = PlayerStats.objects.filter(player=self.player).last()
-        # this can be resolved by caching on client
-        if not self.force:
-            if latest_stat and latest_stat.created_at > datetime.datetime.now(timezone.utc) - datetime.timedelta(hours=1):
-                return latest_stat
         # avoiding duplicates in DB here
         if latest_stat and latest_stat.battles == total_battles:
             return latest_stat
