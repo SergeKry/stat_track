@@ -98,8 +98,6 @@ class TankStatistics:
 
         latest_stat = PlayerStats.objects.filter(player=self.player).last()
         # avoiding duplicates in DB here
-        if latest_stat and latest_stat.created_at > datetime.datetime.now(timezone.utc) - datetime.timedelta(hours=1):
-            return latest_stat
         if latest_stat and latest_stat.battles == total_battles:
             return latest_stat
         else:

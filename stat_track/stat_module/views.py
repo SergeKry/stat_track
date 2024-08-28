@@ -83,6 +83,8 @@ class PlayerStatView(generics.ListAPIView):
 
     def get_queryset(self):
         player_id = self.kwargs['player_id']
+        player_stat = TankStatistics(player_id)
+        player_stat.save()
         return PlayerStats.objects.filter(player__player_id=player_id)
 
     def list(self, request, *args, **kwargs):

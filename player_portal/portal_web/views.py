@@ -4,6 +4,7 @@ from django.urls import reverse_lazy
 from django.views.generic import View
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.models import Permission
+from django.conf import settings
 from django.views.generic.edit import CreateView
 from django.contrib.auth.views import LoginView
 from django.contrib import messages
@@ -13,6 +14,11 @@ from .utils import Puzzle, convert_timestamp_from_json
 import requests
 import datetime
 from datetime import timezone
+import redis
+import json
+
+
+redis = redis.Redis(**settings.REDIS)
 
 
 class StatisticsAPIMixin:
@@ -61,10 +67,6 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
 
     endpoint = 'player_stats/'
 
-    def update_statistics(self):
-        endpoint = 'detailed_stats/'
-        self.post_request(endpoint=endpoint)
-
     def build_line_chart_data(self, statistics: list) -> list:
         data = []
         for item in statistics:
@@ -85,13 +87,23 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
         wn8_changed = latest['wn8'] - first['wn8']
         return {'battles_changed': battles_changed, 'wn8_changed': round(wn8_changed, 2)}
 
+    def get_statistics(self):
+        cache_id_mask = f'stats:{self.pk}'
+        cached_statistics = redis.get(cache_id_mask)
+        if cached_statistics:
+            statistics = json.loads(cached_statistics)
+        else:
+            statistics = self.get_response()
+            redis.set(cache_id_mask, json.dumps(statistics))
+            redis.expire(cache_id_mask, 3600)
+        return statistics
+
     def get(self, request, *args, **kwargs):
         player_profile = PlayerProfile.objects.filter(user=request.user).first()
         if not player_profile:
             return render(request, 'portal_web/set_profile.html')
         self.pk = player_profile.player_id
-        self.update_statistics()
-        statistics = self.get_response()
+        statistics = self.get_statistics()
         try:
             player_profile.battles, player_profile.current_wn8 = statistics[-1]['battles'], statistics[-1]['wn8']
             player_profile.save()
@@ -154,7 +166,14 @@ class DetailedStatView(LoginRequiredMixin, StatisticsAPIMixin, View):
 
     def get(self, request, *args, **kwargs):
         self.pk = request.GET.get('player_id')
-        detailed_stat = self.get_response()
+        cache_key = 'detailed_stat:' + self.pk
+        cached_detailed_stat = redis.get(cache_key)
+        if cached_detailed_stat:
+            detailed_stat = json.loads(cached_detailed_stat)
+        else:
+            detailed_stat = self.get_response()
+            redis.set(cache_key, json.dumps(detailed_stat))
+            redis.expire(cache_key, 300)
         context = {'detailed_stat': detailed_stat}
         return render(request, 'portal_web/detailed_stats.html', context)
 
