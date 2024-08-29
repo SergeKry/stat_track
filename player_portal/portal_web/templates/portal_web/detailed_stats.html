@@ -1,3 +1,7 @@
+{% load static %}
+
+<link rel="stylesheet" href="{% static 'portal_web/css/style.css' %}">
+
 <table class="table">
     <thead>
         <tr>
@@ -15,7 +19,20 @@
         <tr>
             <th scope="row"><img src="{{ item.contour_icon }}"></th>
             <td>{{ item.tank_name }}</td>
-            <td>{{ item.tank_type }}</td>
+            <td>{% if item.tank_type == "heavyTank" %}
+                    <img src="{% static 'portal_web/icons/heavy_tank_icon.svg' %}" alt="Heavy Tank" class="icon-small">
+                {% elif item.tank_type == "AT-SPG" %}
+                    <img src="{% static 'portal_web/icons/at_spg_icon.svg' %}" alt="AT-SPG Tank" class="icon-small">
+                {% elif item.tank_type == "mediumTank" %}
+                    <img src="{% static 'portal_web/icons/medium_tank_icon.svg' %}" alt="Medium Tank" class="icon-small">
+                {% elif item.tank_type == "lightTank" %}
+                    <img src="{% static 'portal_web/icons/light_tank_icon.svg' %}" alt="Light Tank" class="icon-small">
+                {% elif item.tank_type == "SPG" %}
+                    <img src="{% static 'portal_web/icons/spg_icon.svg' %}" alt="SPG Tank" class="icon-small">
+                {% else %}
+                    {{ item.tank_type }}
+                {% endif %}
+            </td>
             <td>{{ item.tank_tier }}</td>
             <td>{{ item.tank_nation }}</td>
             <td>{{ item.tank_battles }}</td>
