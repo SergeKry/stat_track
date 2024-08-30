@@ -4,8 +4,6 @@
 
 {% load static %}
 
-<link rel="stylesheet" href="{% static 'portal_web/css/style.css' %}">
-
 <div class="container">
     <h3 class="text-center my-4">Boost recommendations</h3>
     {% if not request.user.playerprofile.desired_wn8 %}
@@ -25,7 +23,7 @@
         <div class="row">
         {% endif %}
             <div class="col">
-                <div class="card m-2" style="width: 18rem;">
+                <div class="tank-card card mx-2 my-3" style="width: 18rem;">
                     <div class="card-header">
                         <h5 class="card-title">{{ tank.tank_name }}</h5>
                         <h6 class="card-subtitle mb-2 text-muted">
@@ -55,6 +53,7 @@
                               <li class="list-group-item">Battles: {{tank.tank_battles }}</li>
                               <li class="list-group-item">WN8: {{ tank.tank_wn8 }}</li>
                           </ul>
+                          <a href="{% url 'portal_web:tank_stats' tank.wg_tank_id %}" class="stretched-link"></a>
                       </div>
                 </div>
             </div>

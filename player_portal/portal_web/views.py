@@ -234,3 +234,13 @@ class BoostView(LoginRequiredMixin, PermissionRequiredMixin, StatisticsAPIMixin,
         boost_tanks_sorted = sorted(boost_tanks, key=lambda t: t['weighted'])
         context = {'boost_tanks': boost_tanks_sorted}
         return render(request, 'portal_web/boost.html', context)
+
+
+class TankStatsView(LoginRequiredMixin, PermissionRequiredMixin, StatisticsAPIMixin, View):
+    permission_required = 'portal_web.premium_account'
+    endpoint = None  # need to specify endpoint
+
+    def get(self, request, *args, **kwargs):
+        pk = self.kwargs.get('pk')
+        context = {'tank': pk}
+        return render(request, 'portal_web/tank_stats.html', context)
