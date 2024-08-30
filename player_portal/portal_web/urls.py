@@ -9,6 +9,7 @@ from .views import (IndexView,
                     ProfileView,
                     SubscriptionView,
                     BoostView,
+                    TankStat,
                     )
 
 app_name = 'portal_web'
@@ -23,4 +24,5 @@ urlpatterns = [
     path('profile/', ProfileView.as_view(), name='profile'),
     path('subscription/', SubscriptionView.as_view(), name='subscription'),
     path('boost/', BoostView.as_view(), name='boost'),
+    path('tank_stat/<int:pk>/', TankStat.as_view(), name='tank_stat'),
 ]
