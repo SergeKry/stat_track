@@ -1,5 +1,4 @@
 {% load static %}
-{% load bootstrap_icons %}
 
 <table class="table">
     <thead>
@@ -38,7 +37,7 @@
             <td>{{ item.tank_nation }}</td>
             <td>{{ item.tank_battles }}</td>
             <td>{{ item.tank_wn8 }}</td>
-            <td><a href="{% url 'portal_web:tank_stats' item.wg_tank_id %}">{% bs_icon 'eye' color='black' %}</a></td>
+            <td><a href="{% url 'portal_web:tank_stats' item.wg_tank_id %}">Details</a></td>
         </tr>
         {% endfor %}
     </tbody>
