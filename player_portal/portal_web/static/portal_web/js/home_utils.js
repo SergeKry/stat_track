@@ -25,7 +25,7 @@ $('#accordionButtonCollapsed').click(function(){
 
     );
 
-<!--Left WN8 Chart-->
+<!--Right WN8 Chart-->
 const values = JSON.parse(document.getElementById('chart-data').textContent);
 
 new Chart("leftChart", {

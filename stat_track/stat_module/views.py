@@ -3,7 +3,7 @@ from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
-from .serializers import WGPlayerSerializer, PlayerSerializer, PlayerStatsSerializer
+from .serializers import WGPlayerSerializer, PlayerSerializer, PlayerStatsSerializer, TankStatsSerializer
 from .statistics import TankStatistics
 from .models import PlayerStats, DetailedStats
 
@@ -97,3 +97,13 @@ class PlayerStatView(generics.ListAPIView):
             }], status=status.HTTP_200_OK)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class TankStatView(generics.ListAPIView):
+    """Returns tank statistics for requested player"""
+    serializer_class = TankStatsSerializer
+
+    def get_queryset(self):
+        wg_tank_id = self.kwargs['wg_tank_id']
+        wg_player_id = self.request.query_params.get('player')
+        return DetailedStats.objects.filter(tank__wg_tank_id=wg_tank_id).filter(player__player_id=wg_player_id)

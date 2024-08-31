@@ -20,3 +20,10 @@
 .tank-card:hover {
     transform: scale(1.10)
 }
+
+.scatter-chart {
+    width: 100%;
+    max-height: 300px;
+    border: 2px solid lightgrey;
+    border-radius: 5px
+}
