@@ -11,6 +11,7 @@
             <th scope="col">Nation</th>
             <th scope="col">Battles</th>
             <th scope="col">WN8</th>
+            <th scope="col"></th>
         </tr>
     </thead>
     <tbody>
@@ -18,7 +19,8 @@
         <tr>
             <th scope="row"><img src="{{ item.contour_icon }}"></th>
             <td>{{ item.tank_name }}</td>
-            <td>{% if item.tank_type == "heavyTank" %}
+            <td>
+                {% if item.tank_type == "heavyTank" %}
                     <img src="{% static 'portal_web/icons/heavy_tank_icon.svg' %}" alt="Heavy Tank" class="icon-small">
                 {% elif item.tank_type == "AT-SPG" %}
                     <img src="{% static 'portal_web/icons/at_spg_icon.svg' %}" alt="AT-SPG Tank" class="icon-small">
