@@ -41,7 +41,9 @@
         <div class="row mb-2">
             <div class="col my-2">
                 <table class="table">
-                    <caption>Damage suggestion will be here. Can be hidden with if statement</caption>
+                    {% if desired_damage %}
+                        <caption>Desired damage to achieve your goal: {{ desired_damage|floatformat:2 }}</caption>
+                    {% endif %}
                     <thead>
                         <tr>
                             <th scope="col"> </th>
@@ -89,7 +91,6 @@
         </div>
         <div hidden>{{ line_chart_data|json_script:"chart-data" }}</div>
     </div>
-
     <script src="{% static 'portal_web/js/tank_stats_utils.js' %}"></script>
 </body>
 {% endblock %}
