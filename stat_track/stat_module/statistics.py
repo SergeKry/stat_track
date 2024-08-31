@@ -14,19 +14,38 @@ class IndividualTankStatistics:
         self.battles = self.random_data['battles']
 
     @property
+    def avg_damage(self):
+        if self.battles > 0:
+            return self.random_data['damage_dealt'] / self.battles
+
+    @property
+    def avg_spot(self):
+        if self.battles > 0:
+            return self.random_data['spotted'] / self.battles
+
+    @property
+    def avg_frag(self):
+        if self.battles > 0:
+            return self.random_data['frags'] / self.battles
+
+    @property
+    def avg_def(self):
+        if self.battles > 0:
+            return self.random_data['dropped_capture_points'] / self.battles
+
+    @property
+    def avg_winrate(self):
+        if self.battles > 0:
+            return self.random_data['wins'] / self.battles * 100
+
+    @property
     def wn8(self):
         if self.battles > 0:
-            avg_dmg = self.random_data['damage_dealt'] / self.battles
-            avg_spot = self.random_data['spotted'] / self.battles
-            avg_frag = self.random_data['frags'] / self.battles
-            avg_def = self.random_data['dropped_capture_points'] / self.battles
-            avg_win_rate = self.random_data['wins'] / self.battles * 100
-
-            r_damage = avg_dmg / self.tank.exp_damage
-            r_spot = avg_spot / self.tank.exp_spot
-            r_frag = avg_frag / self.tank.exp_frag
-            r_def = avg_def / self.tank.exp_def
-            r_win = avg_win_rate / self.tank.exp_winrate
+            r_damage = self.avg_damage / self.tank.exp_damage
+            r_spot = self.avg_spot / self.tank.exp_spot
+            r_frag = self.avg_frag / self.tank.exp_frag
+            r_def = self.avg_def / self.tank.exp_def
+            r_win = self.avg_winrate / self.tank.exp_winrate
 
             r_win_c = max(0, (r_win - 0.71) / (1 - 0.71))
             r_damage_c = max(0, (r_damage - 0.22) / (1 - 0.22))
@@ -69,7 +88,12 @@ class TankStatistics:
 
                 tank_stats.append({'tank_id': tank_stat.tank.wg_tank_id,
                                    'tank_battles': tank_stat.battles,
-                                   'tank_wn8': tank_stat.wn8})
+                                   'tank_wn8': tank_stat.wn8,
+                                   'tank_avg_damage': round(tank_stat.avg_damage, 2),
+                                   'tank_avg_spot': round(tank_stat.avg_spot, 2),
+                                   'tank_avg_frag': round(tank_stat.avg_frag, 2),
+                                   'tank_avg_def': round(tank_stat.avg_def, 2),
+                                   'tank_avg_win_rate': round(tank_stat.avg_winrate, 2)})
 
                 # Checking if we have a record already. If number of battles didn't change, we do not create a duplicate
                 latest_stat = DetailedStats.objects.filter(player=self.player).filter(tank=tank_stat.tank).last()
@@ -83,6 +107,11 @@ class TankStatistics:
                     tank=tank_stat.tank,
                     tank_battles=tank_stat.battles,
                     tank_wn8=tank_stat.wn8,
+                    avg_damage=tank_stat.avg_damage,
+                    avg_spot=tank_stat.avg_spot,
+                    avg_frag=tank_stat.avg_frag,
+                    avg_def=tank_stat.avg_def,
+                    avg_winrate=tank_stat.avg_winrate,
                     actual=True,
                 )
         return tank_stats

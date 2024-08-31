@@ -40,6 +40,11 @@ class DetailedStats(models.Model):
     tank_wn8 = models.FloatField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)
     actual = models.BooleanField(default=True)
+    avg_damage = models.FloatField(default=0, null=True)
+    avg_spot = models.FloatField(default=0, null=True)
+    avg_frag = models.FloatField(default=0, null=True)
+    avg_def = models.FloatField(default=0, null=True)
+    avg_winrate = models.FloatField(default=0, null=True)
 
     class Meta:
         ordering = ['created_at']

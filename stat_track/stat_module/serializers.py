@@ -22,7 +22,16 @@ class PlayerStatsSerializer(serializers.ModelSerializer):
 class TankStatsSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailedStats
-        fields = ['tank', 'tank_battles', 'tank_wn8', 'actual', 'created_at']
+        fields = ['tank',
+                  'tank_battles',
+                  'tank_wn8',
+                  'actual',
+                  'created_at',
+                  'avg_damage',
+                  'avg_spot',
+                  'avg_frag',
+                  'avg_def',
+                  'avg_winrate']
 
 
 class TankDetailsSerializer(serializers.ModelSerializer):

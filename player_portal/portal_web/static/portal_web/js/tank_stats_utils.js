@@ -22,3 +22,26 @@ new Chart("wn8LineChart", {
       }
   }
 });
+
+// Converting date in a human-readable format
+document.addEventListener('DOMContentLoaded', function() {
+// Original date string
+    const lastUpdateElement = document.getElementById('lastUpdate');
+    const dateStr = lastUpdateElement.textContent;
+
+    // Convert to Date object
+    const dateObj = new Date(dateStr);
+
+    // Format using Intl.DateTimeFormat
+    const options = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+        hour: 'numeric',
+        minute: 'numeric',
+        hour12: false,
+    };
+
+    const formattedDate = new Intl.DateTimeFormat('en-US', options).format(dateObj);
+    lastUpdateElement.textContent = formattedDate;
+});
