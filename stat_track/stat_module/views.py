@@ -3,9 +3,9 @@ from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
-from .serializers import WGPlayerSerializer, PlayerSerializer, PlayerStatsSerializer, TankStatsSerializer
+from .serializers import WGPlayerSerializer, PlayerSerializer, PlayerStatsSerializer, TankStatsSerializer, TankDetailsSerializer
 from .statistics import TankStatistics
-from .models import PlayerStats, DetailedStats
+from .models import PlayerStats, DetailedStats, Tank
 
 
 class WargamingAPIMixin:
@@ -107,3 +107,10 @@ class TankStatView(generics.ListAPIView):
         wg_tank_id = self.kwargs['wg_tank_id']
         wg_player_id = self.request.query_params.get('player')
         return DetailedStats.objects.filter(tank__wg_tank_id=wg_tank_id).filter(player__player_id=wg_player_id)
+
+
+class TankDetailsView(generics.RetrieveAPIView):
+    lookup_field = 'wg_tank_id'
+    lookup_url_kwarg = 'wg_tank_id'
+    queryset = Tank.objects.all()
+    serializer_class = TankDetailsSerializer

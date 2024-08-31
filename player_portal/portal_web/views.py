@@ -239,6 +239,7 @@ class BoostView(LoginRequiredMixin, PermissionRequiredMixin, StatisticsAPIMixin,
 class TankStatsView(LoginRequiredMixin, PermissionRequiredMixin, StatisticsAPIMixin, View):
     permission_required = 'portal_web.premium_account'
     statistics_endpoint = 'tank_stats/'
+    tank_details_endpoint = 'tank_details/'
 
     def build_line_chart_data(self, statistics: list) -> list:
         data = []
@@ -253,5 +254,9 @@ class TankStatsView(LoginRequiredMixin, PermissionRequiredMixin, StatisticsAPIMi
         player = PlayerProfile.objects.filter(user=request.user).first()
         statistics = self.get_response(self.statistics_endpoint+str(wg_tank_id), {'player': player.player_id})
         line_chart_data = self.build_line_chart_data(statistics)
-        context = {'tank': wg_tank_id, 'statistics': statistics, 'line_chart_data': line_chart_data}
+        tank_details = self.get_response(self.tank_details_endpoint+str(wg_tank_id))
+        context = {'tank': wg_tank_id,
+                   'actual_statistics': statistics[-1],
+                   'line_chart_data': line_chart_data,
+                   'tank_details': tank_details}
         return render(request, 'portal_web/tank_stats.html', context)

@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Player, PlayerStats, DetailedStats
+from .models import Player, PlayerStats, DetailedStats, Tank
 
 
 class WGPlayerSerializer(serializers.Serializer):
@@ -23,3 +23,21 @@ class TankStatsSerializer(serializers.ModelSerializer):
     class Meta:
         model = DetailedStats
         fields = ['tank', 'tank_battles', 'tank_wn8', 'actual', 'created_at']
+
+
+class TankDetailsSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tank
+        fields = ['name',
+                  'nation',
+                  'wg_tank_id',
+                  'tier',
+                  'type',
+                  'exp_def',
+                  'exp_spot',
+                  'exp_damage',
+                  'exp_winrate',
+                  'exp_frag',
+                  'small_icon',
+                  'contour_icon',
+                  'big_icon']

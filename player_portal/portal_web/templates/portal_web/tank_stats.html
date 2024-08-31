@@ -5,9 +5,76 @@
 {% block content %}
 <body>
     <div class="container">
+        <div class="tank-header container-fluid mt-2">
+            <div class="row mb-2 bg-light">
+                <h2 class="d-inline-flex mt-1">
+                    {% if tank_details.type == "heavyTank" %}
+                        <img src="{% static 'portal_web/icons/heavy_tank_icon.svg' %}" alt="Heavy Tank" class="icon-medium">
+                    {% elif tank_details.type == "AT-SPG" %}
+                        <img src="{% static 'portal_web/icons/at_spg_icon.svg' %}" alt="AT-SPG Tank" class="icon-medium">
+                    {% elif tank_details.type == "mediumTank" %}
+                        <img src="{% static 'portal_web/icons/medium_tank_icon.svg' %}" alt="Medium Tank" class="icon-medium">
+                    {% elif tank_details.type == "lightTank" %}
+                        <img src="{% static 'portal_web/icons/light_tank_icon.svg' %}" alt="Light Tank" class="icon-medium">
+                    {% elif tank_details.type == "SPG" %}
+                        <img src="{% static 'portal_web/icons/spg_icon.svg' %}" alt="SPG Tank" class="icon-medium">
+                    {% else %}
+                        {{ tank_details.type }}
+                    {% endif %}
+                    {{ tank_details.name }}
+                </h2>
+            </div>
+            <div class="row mb-2">
+                <p class="text-muted my-0 mx-2">
+                    Tier: {{ tank_details.tier }}
+                    {{ tank_details.nation }}
+                </p>
+            </div>
+        </div>
         <div class="row mb-2">
             <div class="col my-2">
-
+                <table class="table">
+                    <caption>Damage suggestion will be here. Can be hidden with if statement</caption>
+                    <thead>
+                        <tr>
+                            <th scope="col"> </th>
+                            <th scope="col">Expected</th>
+                            <th scope="col">Actual</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <th scope="row">Damage:</th>
+                            <td>{{ tank_details.exp_damage }}</td>
+                            <td>n/a</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Spotted:</th>
+                            <td>{{ tank_details.exp_spot }}</td>
+                            <td>n/a</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Frags:</th>
+                            <td>{{ tank_details.exp_frag }}</td>
+                            <td>n/a</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Defence:</th>
+                            <td>{{ tank_details.exp_def }}</td>
+                            <td>n/a</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">Win Rate:</th>
+                            <td>{{ tank_details.exp_winrate }}</td>
+                            <td>n/a</td>
+                        </tr>
+                        <tr>
+                            <th scope="row">WN8:</th>
+                            <td></td>
+                            <td>{{ actual_statistics.tank_wn8 }}</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
             <div class="col my-2" id="wn8chart">
                 <canvas id="wn8LineChart" class="scatter-chart"></canvas>
