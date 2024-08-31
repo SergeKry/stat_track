@@ -89,11 +89,12 @@ class TankStatistics:
                 tank_stats.append({'tank_id': tank_stat.tank.wg_tank_id,
                                    'tank_battles': tank_stat.battles,
                                    'tank_wn8': tank_stat.wn8,
-                                   'tank_avg_damage': round(tank_stat.avg_damage, 2),
-                                   'tank_avg_spot': round(tank_stat.avg_spot, 2),
-                                   'tank_avg_frag': round(tank_stat.avg_frag, 2),
-                                   'tank_avg_def': round(tank_stat.avg_def, 2),
-                                   'tank_avg_win_rate': round(tank_stat.avg_winrate, 2)})
+                                   'tank_avg_damage': tank_stat.avg_damage,
+                                   'tank_avg_spot': tank_stat.avg_spot,
+                                   'tank_avg_frag': tank_stat.avg_frag,
+                                   'tank_avg_def': tank_stat.avg_def,
+                                   'tank_avg_win_rate': tank_stat.avg_winrate,
+                                   })
 
                 # Checking if we have a record already. If number of battles didn't change, we do not create a duplicate
                 latest_stat = DetailedStats.objects.filter(player=self.player).filter(tank=tank_stat.tank).last()
