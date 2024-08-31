@@ -1,5 +1,13 @@
 from django.urls import path
-from .views import GetPlayersView, CreatePlayerView, DetailedStatView, PlayerStatView, TankStatView, TankDetailsView
+from .views import (
+    GetPlayersView,
+    CreatePlayerView,
+    DetailedStatView,
+    PlayerStatView,
+    TankStatView,
+    TankDetailsView,
+    DesiredDamageView,
+)
 
 
 urlpatterns = [
@@ -9,4 +17,5 @@ urlpatterns = [
     path('player_stats/<int:player_id>/', PlayerStatView.as_view(), name='player_stats'),
     path('tank_stats/<int:wg_tank_id>', TankStatView.as_view(), name='tank_stats'),
     path('tank_details/<int:wg_tank_id>', TankDetailsView.as_view(), name='tank_stats'),
+    path('desired_damage/', DesiredDamageView.as_view(), name='desired_damage'),
 ]
