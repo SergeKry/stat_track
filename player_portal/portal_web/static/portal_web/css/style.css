@@ -4,11 +4,32 @@
 }
 
 .icon-medium {
-    width: 50px;
-    height: 50px;
+    width: 40px;
+    height: 40px;
 }
 
 .icon-large {
     width: 100px;
     height: 100px;
+}
+
+.tank-card {
+    transition: all 0.3s
+}
+
+.tank-card:hover {
+    transform: scale(1.10);
+    box-shadow: 5px 5px 10px lightgrey;
+}
+
+.scatter-chart {
+    width: 100%;
+    max-height: 300px;
+    border: 2px solid lightgrey;
+    border-radius: 5px
+}
+
+.tank-header {
+    border: 2px solid lightgrey;
+    border-radius: 5px;
 }

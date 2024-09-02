@@ -3,9 +3,9 @@ from rest_framework import generics, status
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from django.conf import settings
-from .serializers import WGPlayerSerializer, PlayerSerializer, PlayerStatsSerializer
-from .statistics import TankStatistics
-from .models import PlayerStats, DetailedStats
+from .serializers import WGPlayerSerializer, PlayerSerializer, PlayerStatsSerializer, TankStatsSerializer, TankDetailsSerializer
+from .statistics import TankStatistics, IndividualTankStatistics
+from .models import PlayerStats, DetailedStats, Tank
 
 
 class WargamingAPIMixin:
@@ -97,3 +97,45 @@ class PlayerStatView(generics.ListAPIView):
             }], status=status.HTTP_200_OK)
         serializer = self.get_serializer(queryset, many=True)
         return Response(serializer.data)
+
+
+class TankStatView(generics.ListAPIView):
+    """Returns tank statistics for requested player"""
+    serializer_class = TankStatsSerializer
+
+    def get_queryset(self):
+        wg_tank_id = self.kwargs['wg_tank_id']
+        wg_player_id = self.request.query_params.get('player')
+        return DetailedStats.objects.filter(tank__wg_tank_id=wg_tank_id).filter(player__player_id=wg_player_id)
+
+
+class TankDetailsView(generics.RetrieveAPIView):
+    lookup_field = 'wg_tank_id'
+    lookup_url_kwarg = 'wg_tank_id'
+    queryset = Tank.objects.all()
+    serializer_class = TankDetailsSerializer
+
+
+class DesiredDamageView(APIView):
+    def get(self, request, *args, **kwargs):
+        wg_player_id = self.request.query_params.get('player')
+        wg_tank_id = self.request.query_params.get('tank')
+        desired_rating = int(self.request.query_params.get('desired_rating'))
+        player_stat = DetailedStats.objects.filter(tank__wg_tank_id=wg_tank_id).filter(player__player_id=wg_player_id).filter(actual=True).first()
+        init_dict = {
+            "random": {
+                "battles": player_stat.tank_battles,
+            },
+            "tank_id": wg_tank_id
+        }
+        avg_values = {
+            "player_dmg": player_stat.avg_damage,
+            "avg_spot": player_stat.avg_spot,
+            "avg_frag": player_stat.avg_frag,
+            "avg_def": player_stat.avg_def,
+            "avg_win": player_stat.avg_winrate,
+        }
+        wn8 = player_stat.tank_wn8
+        tank_stat_object = IndividualTankStatistics(init_dict)
+        desired_damage = tank_stat_object.get_desired_damage(wn8, desired_rating, **avg_values)
+        return Response({"desired damage": desired_damage}, status=status.HTTP_200_OK)

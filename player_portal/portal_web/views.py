@@ -234,3 +234,36 @@ class BoostView(LoginRequiredMixin, PermissionRequiredMixin, StatisticsAPIMixin,
         boost_tanks_sorted = sorted(boost_tanks, key=lambda t: t['weighted'])
         context = {'boost_tanks': boost_tanks_sorted}
         return render(request, 'portal_web/boost.html', context)
+
+
+class TankStatsView(LoginRequiredMixin, PermissionRequiredMixin, StatisticsAPIMixin, View):
+    permission_required = 'portal_web.premium_account'
+    statistics_endpoint = 'tank_stats/'
+    tank_details_endpoint = 'tank_details/'
+    desired_damage_endpoint = 'desired_damage/'
+
+    def build_line_chart_data(self, statistics: list) -> list:
+        data = []
+        for item in statistics:
+            x = item['tank_battles']
+            y = item['tank_wn8']
+            data.append({'x': x, 'y': y})
+        return data
+
+    def get(self, request, *args, **kwargs):
+        wg_tank_id = self.kwargs.get('pk')
+        player = PlayerProfile.objects.filter(user=request.user).first()
+        statistics = self.get_response(self.statistics_endpoint+str(wg_tank_id), {'player': player.player_id})
+        line_chart_data = self.build_line_chart_data(statistics)
+        tank_details = self.get_response(self.tank_details_endpoint+str(wg_tank_id))
+        desired_damage = self.get_response(
+            self.desired_damage_endpoint,
+            {'player': player.player_id, 'tank': wg_tank_id, 'desired_rating': player.desired_wn8}
+        )
+        context = {'tank': wg_tank_id,
+                   'actual_statistics': statistics[-1],
+                   'line_chart_data': line_chart_data,
+                   'tank_details': tank_details,
+                   'desired_damage': desired_damage.get("desired damage")
+                   }
+        return render(request, 'portal_web/tank_stats.html', context)
