@@ -256,9 +256,10 @@ class TankStatsView(LoginRequiredMixin, PermissionRequiredMixin, StatisticsAPIMi
         statistics = self.get_response(self.statistics_endpoint+str(wg_tank_id), {'player': player.player_id})
         line_chart_data = self.build_line_chart_data(statistics)
         tank_details = self.get_response(self.tank_details_endpoint+str(wg_tank_id))
+        desired_wn8 = player.desired_wn8 if player.desired_wn8 else int(player.current_wn8)
         desired_damage = self.get_response(
             self.desired_damage_endpoint,
-            {'player': player.player_id, 'tank': wg_tank_id, 'desired_rating': player.desired_wn8}
+            {'player': player.player_id, 'tank': wg_tank_id, 'desired_rating': desired_wn8}
         )
         context = {'tank': wg_tank_id,
                    'actual_statistics': statistics[-1],
