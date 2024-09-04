@@ -1,5 +1,6 @@
 import random
 import datetime
+from datetime import timezone
 
 
 class Puzzle:
@@ -9,6 +10,8 @@ class Puzzle:
 
 
 def convert_timestamp_from_json(timestamp: str):
+    if not timestamp:
+        return datetime.datetime.now(timezone.utc)
     timestamp_naive = datetime.datetime.strptime(timestamp, "%Y-%m-%dT%H:%M:%S.%fZ")
     timestamp_aware = timestamp_naive.replace(tzinfo=datetime.timezone.utc)
     return timestamp_aware
