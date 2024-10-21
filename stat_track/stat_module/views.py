@@ -51,6 +51,7 @@ class DetailedStatView(APIView):
     def get(self, request, *args, **kwargs):
         player_id = kwargs.get('player_id')
         rating = self.request.query_params.get('rating')
+        player_actual_statistics = PlayerStats.objects.filter(player__player_id=player_id).filter(actual=True).first()
         queryset = DetailedStats.objects.filter(player__player_id=player_id).filter(actual=True)
         response = []
         if rating:
@@ -70,7 +71,7 @@ class DetailedStatView(APIView):
                 'big_icon': item.tank.big_icon,
                 'tank_battles': item.tank_battles,
                 'tank_wn8': item.tank_wn8,
-                'weighted': (item.tank_wn8-int(rating))*item.tank_battles if rating else 0,
+                'weighted': (item.tank_wn8-int(player_actual_statistics.wn8))*item.tank_battles if rating else 0,
             }
             response.append(tank_stat)
         return Response(response, status=status.HTTP_200_OK)
