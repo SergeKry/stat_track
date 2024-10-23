@@ -4,11 +4,10 @@ Single repo that contains two Django projects. Both are dockerized and can be ru
 
 Bootstrap 5 is used for better visual style. Some JavScript on client side and JS library for building charts.
 
-How to run:
-prepare your environment variables.
-run:
-docker-compose up -d
+How to run locally:  
+- prepare your environment variables.
+- run: docker-compose up -d
 
-env variables:
-WARGAMING_API_KEY - your World of Tanks API key. Can be generated here: https://developers.wargaming.net
-DJANGO_LOG_LEVEL - desired log level for Django logger (INFO is default)
+env variables:  
+WARGAMING_API_KEY - your World of Tanks API key. Can be generated here: https://developers.wargaming.net  
+DJANGO_LOG_LEVEL - desired log level for Django logger (INFO is default)  
