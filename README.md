@@ -10,5 +10,5 @@ run:
 docker-compose up -d
 
 env variables:
-WARGAMING_API_KEY - your World of Tanks API key. Can be generated here: https://developers.wargaming.ne
+WARGAMING_API_KEY - your World of Tanks API key. Can be generated here: https://developers.wargaming.net
 DJANGO_LOG_LEVEL - desired log level for Django logger (INFO is default)
