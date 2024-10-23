@@ -2,7 +2,7 @@
 
 Single repo that contains two Django projects. Both are dockerized and can be run with docker-compose. Two apps are communicating via Django Rest Framework. Using PostgreSQL as database. Celery is used for scheduled tasks. Redis is used as cache to reduce the load for API.
 
-Bootstrap 5 is used for better visual style. Some JavScript on client side and JS library for building charts.
+Bootstrap 5 is used for better visual style. Some JavaScript on client side and JS library for building charts.
 
 How to run locally:  
 - prepare your environment variables.
