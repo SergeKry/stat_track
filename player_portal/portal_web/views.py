@@ -46,8 +46,8 @@ class StatisticsAPIMixin:
             r = requests.get(self.url + endpoint, params=parameters, json=json)
         try:
             return r.json()
-        except:
-            return 'Oops, something went wrong. GET method. Json cannot be parsed'
+        except Exception as err:
+            return f'Oops, something went wrong. GET method. Json cannot be parsed. {err}'
 
     def post_request(self, endpoint=None, parameters=None, json=None):
         endpoint, parameters, json = self.get_attributes(endpoint, parameters, json)
@@ -95,7 +95,7 @@ class IndexView(LoginRequiredMixin, StatisticsAPIMixin, View):
         else:
             statistics = self.get_response()
             redis.set(cache_id_mask, json.dumps(statistics))
-            redis.expire(cache_id_mask, 3600)
+            redis.expire(cache_id_mask, 1800)
         return statistics
 
     def get(self, request, *args, **kwargs):

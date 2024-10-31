@@ -47,7 +47,7 @@ class IndividualTankStatistics:
 
     @property
     def wn8(self):
-        if self.battles > 0:
+        if self.battles > 0 and self.tank.exp_damage:
             r_damage = self.avg_damage / self.tank.exp_damage
             r_spot, r_frag, r_def, r_win = self.get_r_values(self.avg_spot, self.avg_frag, self.avg_def, self.avg_winrate)
 
